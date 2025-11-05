@@ -1,7 +1,7 @@
 import pytest
 from data_structures.hash_tables.hash_map import HashMap
 
-# ====== Constans ======
+# ====== Constants ======
 NUM_ELEMENTS = 10
 KEY_5 = 5
 KEY_10 = 10

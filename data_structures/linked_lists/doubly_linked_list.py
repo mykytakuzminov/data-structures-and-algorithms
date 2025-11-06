@@ -140,7 +140,7 @@ class DoublyLinkedList:
                 return True
 
             current = current.next
-            
+
         return False
 
     def search(self, key):
@@ -199,6 +199,34 @@ class DoublyLinkedList:
         self._head = None
         self._tail = None
         self._length = 0
+
+    def pop_front(self):
+        """Remove and return the element at the head of the list."""
+        if self._head is None:
+            raise IndexError("List is empty")
+
+        value = self._head.data
+        self._head = self._head.next
+
+        if self._head:
+            self._head.prev = None
+        else:
+            self._tail = None
+
+        self._length -= 1
+        return value
+
+    def peek_front(self):
+        """Return the value of the head node without removing it."""
+        if self._head is None:
+            raise IndexError("List is empty")
+        return self._head.data
+
+    def peek_back(self):
+        """Return the value of the tail node without removing it."""
+        if self._tail is None:
+            raise IndexError("List is empty")
+        return self._tail.data
 
     def _get_head(self):
         """Return the head node (for testing purposes)."""

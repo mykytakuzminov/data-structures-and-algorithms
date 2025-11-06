@@ -107,6 +107,63 @@ def test_delete(populated_list):
     assert populated_list._get_head().data == TEST_LIST[1]
     assert populated_list._get_tail().data == TEST_LIST[-2]
 
+# ====== Tests: Front/Back Access Methods ======
+def test_pop_front_one_element(empty_list):
+    """Test pop_front() on a list with a single element."""
+    empty_list.append(0)
+
+    assert empty_list.pop_front() == 0
+    assert len(empty_list) == 0
+    assert empty_list._get_head() is None
+    assert empty_list._get_tail() is None
+
+def test_pop_front_many_elements(populated_list):
+    """Test pop_front() on a list with multiple elements."""
+    assert populated_list.pop_front() == TEST_LIST[0]
+    assert len(populated_list) == NUM_ELEMENTS - 1
+    assert populated_list._get_head().data == TEST_LIST[1]
+    assert populated_list._get_head().prev is None
+    assert populated_list._get_tail().data == TEST_LIST[-1]
+
+    assert populated_list.pop_front() == TEST_LIST[1]
+    assert len(populated_list) == NUM_ELEMENTS - 2
+    assert populated_list._get_head().data == TEST_LIST[2]
+    assert populated_list._get_head().prev is None
+    assert populated_list._get_tail().data == TEST_LIST[-1]
+
+def test_pop_front_index_error(empty_list):
+    """Test pop_front() raises IndexError for an empty list."""
+    with pytest.raises(IndexError):
+        empty_list.pop_front()
+
+def test_peek_front(populated_list):
+    """Test peek_front() returns the first element without removing it."""
+    first_element = TEST_LIST[0]
+
+    for _ in range(2):
+        assert populated_list.peek_front() == first_element
+
+    assert len(populated_list) == NUM_ELEMENTS
+
+def test_peek_front_index_error(empty_list):
+    """Test peek_front() raises IndexError for an empty list."""
+    with pytest.raises(IndexError):
+        empty_list.peek_front()
+
+def test_peek_back(populated_list):
+    """Test peek_back() returns the last element without removing it."""
+    last_element = TEST_LIST[-1]
+
+    for _ in range(2):
+        assert populated_list.peek_back() == last_element
+
+    assert len(populated_list) == NUM_ELEMENTS
+
+def test_peek_back_index_error(empty_list):
+    """Test peek_back() raises IndexError for an empty list."""
+    with pytest.raises(IndexError):
+        empty_list.peek_back()
+
 # ====== Tests: Accessing Elements ======
 @pytest.mark.parametrize("index,expected", TEST_DATA)
 def test_get(populated_list, index, expected):

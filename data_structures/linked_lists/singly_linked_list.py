@@ -85,7 +85,6 @@ class SinglyLinkedList:
             return
 
         new_node = Node(data)
-        
         current = self._head
         for _ in range(index - 1):
             current = current.next

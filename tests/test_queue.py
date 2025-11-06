@@ -5,11 +5,13 @@ from data_structures.queues.queue import Queue
 NUM_ELEMENTS = 5
 TEST_QUEUE = [n for n in range(NUM_ELEMENTS)]
 
+
 # ====== Fixtures ======
 @pytest.fixture
 def empty_queue():
     """Return an empty Queue."""
     return Queue()
+
 
 @pytest.fixture
 def populated_queue():
@@ -19,11 +21,13 @@ def populated_queue():
         q.enqueue(i)
     return q
 
+
 # ====== Tests: Emptiness ======
 def test_is_empty(empty_queue, populated_queue):
     """Check is_empty() for empty and populated Queue."""
     assert empty_queue.is_empty()
     assert not populated_queue.is_empty()
+
 
 # ====== Tests: Adding Elements ======
 def test_enqueue(empty_queue):
@@ -36,6 +40,7 @@ def test_enqueue(empty_queue):
     assert empty_queue.back() == 3
     assert len(empty_queue) == 3
 
+
 # ====== Tests: Removing Elements ======
 def test_dequeue(populated_queue):
     """Test dequeue() removes elements from the front."""
@@ -44,10 +49,12 @@ def test_dequeue(populated_queue):
     assert populated_queue.dequeue() == TEST_QUEUE[2]
     assert len(populated_queue) == NUM_ELEMENTS - 3
 
+
 def test_dequeue_index_error(empty_queue):
     """Test dequeue() raises IndexError when the queue is empty."""
     with pytest.raises(IndexError):
         empty_queue.dequeue()
+
 
 # ====== Tests: Accessing Elements ======
 def test_peek_front(populated_queue):
@@ -56,10 +63,12 @@ def test_peek_front(populated_queue):
     assert populated_queue.front() == TEST_QUEUE[0]
     assert len(populated_queue) == NUM_ELEMENTS
 
+
 def test_peek_front_index_error(empty_queue):
-     """Test front() raises IndexError when the queue is empty."""
-     with pytest.raises(IndexError):
+    """Test front() raises IndexError when the queue is empty."""
+    with pytest.raises(IndexError):
         empty_queue.front()
+
 
 def test_peek_back(populated_queue):
     """Test back() returns the last element without removing it."""
@@ -67,10 +76,12 @@ def test_peek_back(populated_queue):
     assert populated_queue.back() == TEST_QUEUE[-1]
     assert len(populated_queue) == NUM_ELEMENTS
 
+
 def test_peek_back_index_error(empty_queue):
-     """Test back() raises IndexError when the queue is empty."""
-     with pytest.raises(IndexError):
+    """Test back() raises IndexError when the queue is empty."""
+    with pytest.raises(IndexError):
         empty_queue.back()
+
 
 # ====== Tests: Clearing the List ======
 def test_clear(empty_queue, populated_queue):
@@ -83,11 +94,13 @@ def test_clear(empty_queue, populated_queue):
     assert populated_queue.traverse() == []
     assert len(populated_queue) == 0
 
+
 # ====== Tests: Length & String Representation ======
 def test_len(empty_queue, populated_queue):
     """Verify __len__() returns correct number of elements."""
     assert len(empty_queue) == 0
     assert len(populated_queue) == NUM_ELEMENTS
+
 
 def test_str(empty_queue, populated_queue):
     """Check __str__ returns correct string representation of the Queue."""

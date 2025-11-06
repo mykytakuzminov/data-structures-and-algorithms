@@ -1,5 +1,6 @@
 from data_structures.linked_lists.doubly_linked_list import DoublyLinkedList
 
+
 class Queue:
     """
     Queue data structure implemented using a doubly linked list.

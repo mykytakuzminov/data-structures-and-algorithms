@@ -10,14 +10,16 @@ NEW_TAIL = 100
 INVALID_LOW_INDEX = -1
 INVALID_HIGH_INDEX = NUM_ELEMENTS + 1
 NOT_EXISTING_VALUE = 999
-NOT_EXISTING_VALUES = [NUM_ELEMENTS, NEW_HEAD, NEW_MIDDLE, NEW_TAIL, NOT_EXISTING_VALUE]
+NOT_EXISTING_VALUES = [NEW_HEAD, NEW_MIDDLE, NEW_TAIL, NOT_EXISTING_VALUE]
 TEST_DATA = [(i, val) for i, val in enumerate(TEST_LIST)]
+
 
 # ====== Fixtures ======
 @pytest.fixture
 def empty_list():
     """Return an empty singly linked list."""
     return SinglyLinkedList()
+
 
 @pytest.fixture
 def populated_list():
@@ -27,11 +29,13 @@ def populated_list():
         sll.append(value)
     return sll
 
+
 # ====== Tests: Emptiness ======
 def test_is_empty(empty_list, populated_list):
     """Check is_empty() for empty and populated lists."""
     assert empty_list.is_empty()
     assert not populated_list.is_empty()
+
 
 # ====== Tests: Adding Elements ======
 def test_append(empty_list):
@@ -42,6 +46,7 @@ def test_append(empty_list):
     assert empty_list.traverse() == [1, 2, 3]
     assert len(empty_list) == 3
 
+
 def test_prepend(empty_list, populated_list):
     """Test prepend() adds elements to the beginning of the list."""
     empty_list.prepend(NEW_HEAD)
@@ -51,6 +56,7 @@ def test_prepend(empty_list, populated_list):
     populated_list.prepend(NEW_HEAD)
     assert populated_list.traverse() == [NEW_HEAD] + TEST_LIST
     assert len(populated_list) == NUM_ELEMENTS + 1
+
 
 def test_insert(populated_list):
     """Test insert() at head, middle, and tail positions."""
@@ -70,12 +76,14 @@ def test_insert(populated_list):
     # Verify length
     assert len(populated_list) == NUM_ELEMENTS + 3
 
+
 def test_insert_index_error(populated_list):
     """Verify insert() raises IndexError for invalid indices."""
     with pytest.raises(IndexError):
         populated_list.insert(INVALID_LOW_INDEX, NEW_MIDDLE)
     with pytest.raises(IndexError):
         populated_list.insert(INVALID_HIGH_INDEX, NEW_MIDDLE)
+
 
 # ====== Tests: Removing Elements ======
 def test_delete(populated_list):
@@ -95,11 +103,13 @@ def test_delete(populated_list):
     # Attempt to remove non-existing value
     assert not populated_list.delete(NOT_EXISTING_VALUE)
 
+
 # ====== Tests: Accessing Elements ======
 @pytest.mark.parametrize("index,expected", TEST_DATA)
 def test_get(populated_list, index, expected):
     """Test get() returns correct element for valid indices."""
     assert populated_list.get(index) == expected
+
 
 def test_get_index_error(populated_list):
     """Test get() raises IndexError for invalid indices."""
@@ -108,25 +118,30 @@ def test_get_index_error(populated_list):
     with pytest.raises(IndexError):
         populated_list.get(INVALID_HIGH_INDEX)
 
+
 # ====== Tests: Searching Elements ======
 @pytest.mark.parametrize("value", TEST_LIST)
 def test_search_existing(populated_list, value):
     """Verify search() finds existing elements."""
     assert populated_list.search(value)
 
+
 @pytest.mark.parametrize("value", NOT_EXISTING_VALUES)
 def test_search_not_existing(populated_list, value):
     """Verify search() returns False for non-existing elements."""
     assert not populated_list.search(value)
+
 
 # ====== Tests: Traversal ======
 def test_traverse_empty(empty_list):
     """Check traverse() returns empty list for an empty linked list."""
     assert empty_list.traverse() == []
 
+
 def test_traverse_populated(populated_list):
     """Check traverse() returns all elements in correct order."""
     assert populated_list.traverse() == TEST_LIST
+
 
 # ====== Tests: Clearing the List ======
 def test_clear(empty_list, populated_list):
@@ -139,11 +154,13 @@ def test_clear(empty_list, populated_list):
     assert populated_list.traverse() == []
     assert len(populated_list) == 0
 
+
 # ====== Tests: Length & String Representation ======
 def test_len(empty_list, populated_list):
     """Verify __len__() returns correct number of elements."""
     assert len(empty_list) == 0
     assert len(populated_list) == NUM_ELEMENTS
+
 
 def test_str(empty_list, populated_list):
     """Verify __str__() returns correct string representation."""

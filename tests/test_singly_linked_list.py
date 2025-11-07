@@ -3,7 +3,7 @@ from data_structures.linked_lists.singly_linked_list import SinglyLinkedList
 
 # ====== Constants ======
 NUM_ELEMENTS = 5
-TEST_LIST = [i for i in range(5)]
+TEST_LIST = [n for n in range(5)]
 NEW_HEAD = 99
 NEW_MIDDLE = 55
 NEW_TAIL = 100
@@ -25,8 +25,8 @@ def empty_list():
 def populated_list():
     """Return a singly linked list pre-populated with TEST_LIST values."""
     sll = SinglyLinkedList()
-    for value in TEST_LIST:
-        sll.append(value)
+    for n in TEST_LIST:
+        sll.append(n)
     return sll
 
 

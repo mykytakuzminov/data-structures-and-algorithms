@@ -17,8 +17,8 @@ def empty_queue():
 def populated_queue():
     """Return a queue filled with TEST_QUEUE values."""
     q = Queue()
-    for i in range(NUM_ELEMENTS):
-        q.enqueue(i)
+    for n in range(NUM_ELEMENTS):
+        q.enqueue(n)
     return q
 
 

@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class HashMap:
     """
     Hash map with basic operations.
@@ -8,21 +11,34 @@ class HashMap:
         get(key): Get the value for a key.
         remove(key): Remove a key-value pair.
     """
-    def __init__(self, capacity=8):
+    _capacity: int
+    _length: int
+    _buckets: list[list[tuple[Any, Any]]]
+
+    def __init__(self, capacity: int = 8) -> None:
         """Initialize an empty hash map with given capacity."""
         self._capacity = capacity
         self._length = 0
         self._buckets = [[] for _ in range(capacity)]
 
-    def _hash(self, key):
-        """Compute index for a given key."""
+    def _hash(self, key: Any) -> int:
+        """
+        Compute index for a given key using Python's built-in hash function.
+
+        Args:
+            key: The key to compute hash for.
+
+        Returns:
+            Index in the internal bucket list where the key-value
+            pair should be stored.
+        """
         return hash(key) % self._capacity
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Return True if the hash map is empty, else False."""
         return self._length == 0
 
-    def put(self, key, value):
+    def put(self, key: Any, value: Any) -> None:
         """Insert or update a key-value pair in the hash map.
 
         Args:
@@ -40,7 +56,7 @@ class HashMap:
         bucket.append((key, value))
         self._length += 1
 
-    def get(self, key):
+    def get(self, key: Any) -> Any | None:
         """Return the value for the given key, or None if key not found.
 
         Args:
@@ -58,7 +74,7 @@ class HashMap:
 
         return None
 
-    def remove(self, key):
+    def remove(self, key: Any) -> bool:
         """Remove a key-value pair by key.
 
         Args:
@@ -78,11 +94,11 @@ class HashMap:
 
         return False
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the total number of key-value pairs."""
         return self._length
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation like a Python dictionary."""
         if self._length == 0:
             return "{}"

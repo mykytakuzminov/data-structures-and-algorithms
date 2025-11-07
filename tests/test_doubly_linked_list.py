@@ -3,7 +3,7 @@ from data_structures.linked_lists.doubly_linked_list import DoublyLinkedList
 
 # ====== Constants ======
 NUM_ELEMENTS = 5
-TEST_LIST = [i for i in range(5)]
+TEST_LIST = [n for n in range(5)]
 NEW_HEAD = 99
 NEW_MIDDLE = 55
 NEW_TAIL = 100
@@ -25,8 +25,8 @@ def empty_list():
 def populated_list():
     """Return a doubly linked list pre-populated with TEST_LIST values."""
     dll = DoublyLinkedList()
-    for value in TEST_LIST:
-        dll.append(value)
+    for n in TEST_LIST:
+        dll.append(n)
     return dll
 
 

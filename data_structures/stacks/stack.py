@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class Stack:
     """
     Stack data structure implemented using a dynamic array (Python list).
@@ -12,11 +15,13 @@ class Stack:
         is_empty(): Check if the stack is empty.
         clear(): Remove all elements from the stack.
     """
-    def __init__(self):
+    _items: list[Any]
+
+    def __init__(self) -> None:
         """Initialize an empty stack using a dynamic array."""
         self._items = []
 
-    def push(self, item):
+    def push(self, item: Any) -> None:
         """Add an element to the top of the stack.
 
         Args:
@@ -24,7 +29,7 @@ class Stack:
         """
         self._items.append(item)
 
-    def pop(self):
+    def pop(self) -> Any:
         """Remove and return the element from the top of the stack.
 
         Returns:
@@ -37,7 +42,7 @@ class Stack:
             raise IndexError("Stack is empty")
         return self._items.pop()
 
-    def peek(self):
+    def peek(self) -> Any:
         """Return the top element of the stack without removing it.
 
         Returns:
@@ -50,22 +55,22 @@ class Stack:
             raise IndexError("Stack is empty")
         return self._items[-1]
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Return True if the stack is empty, else False."""
         return len(self._items) == 0
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all elements from the stack."""
         self._items.clear()
 
-    def traverse(self):
+    def traverse(self) -> list[Any]:
         """Return a list of all elements in the stack."""
         return self._items
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of elements in the stack."""
         return len(self._items)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the stack."""
         return f"Stack({self.traverse()})"

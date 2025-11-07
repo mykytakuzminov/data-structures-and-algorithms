@@ -1,3 +1,6 @@
+from typing import Any, Optional
+
+
 class Node:
     """
     Node class for singly linked list.
@@ -6,7 +9,10 @@ class Node:
         data: The value stored in the node.
         next: Pointer to the next node in the list.
     """
-    def __init__(self, data):
+    data: Any
+    next: Optional["Node"]
+
+    def __init__(self, data: Any) -> None:
         """Initialize a node with a given value."""
         self.data = data
         self.next = None
@@ -27,16 +33,19 @@ class SinglyLinkedList:
         traverse(): Return all elements as a list.
         clear(): Remove all elements from the list.
     """
-    def __init__(self):
+    _head: Optional[Node]
+    _length: int
+
+    def __init__(self) -> None:
         """Initialize an empty singly linked list."""
         self._head = None
         self._length = 0
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Return True if the list is empty, else False."""
         return self._head is None
 
-    def append(self, data):
+    def append(self, data: Any) -> None:
         """Add an element at the end of the list.
 
         Args:
@@ -54,7 +63,7 @@ class SinglyLinkedList:
 
         self._length += 1
 
-    def prepend(self, data):
+    def prepend(self, data: Any) -> None:
         """Add an element at the beginning of the list.
 
         Args:
@@ -67,7 +76,7 @@ class SinglyLinkedList:
 
         self._length += 1
 
-    def insert(self, index, data):
+    def insert(self, index: int, data: Any) -> None:
         """Insert a new element at a specific index.
 
         Args:
@@ -87,14 +96,17 @@ class SinglyLinkedList:
         new_node = Node(data)
         current = self._head
         for _ in range(index - 1):
+            assert current is not None
             current = current.next
+
+        assert current is not None
 
         new_node.next = current.next
         current.next = new_node
 
         self._length += 1
 
-    def delete(self, key):
+    def delete(self, key: Any) -> bool:
         """Delete the first element with the given value.
 
         Args:
@@ -121,7 +133,7 @@ class SinglyLinkedList:
 
         return False
 
-    def search(self, key):
+    def search(self, key: Any) -> bool:
         """Search for an element by value.
 
         Args:
@@ -137,7 +149,7 @@ class SinglyLinkedList:
             current = current.next
         return False
 
-    def get(self, index):
+    def get(self, index: int) -> Any:
         """Return the value of the node at a specific index.
 
         Args:
@@ -154,11 +166,14 @@ class SinglyLinkedList:
 
         current = self._head
         for _ in range(index):
+            assert current is not None
             current = current.next
+
+        assert current is not None
 
         return current.data
 
-    def traverse(self):
+    def traverse(self) -> list[Any]:
         """Return a list of all elements in the linked list."""
         elements = []
         current = self._head
@@ -167,15 +182,15 @@ class SinglyLinkedList:
             current = current.next
         return elements
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all elements from the list."""
         self._head = None
         self._length = 0
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of nodes in the list."""
         return self._length
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the list."""
         return str(self.traverse())

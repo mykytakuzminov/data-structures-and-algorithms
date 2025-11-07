@@ -1,3 +1,4 @@
+from typing import Any
 from data_structures.linked_lists.doubly_linked_list import DoublyLinkedList
 
 
@@ -16,19 +17,21 @@ class Queue:
         is_empty(): Check if the queue is empty.
         clear(): Remove all elements from the queue.
     """
-    def __init__(self):
-        """Initialize an empty queue using a doubly linked list."""
-        self._dll = DoublyLinkedList()
+    _items: DoublyLinkedList
 
-    def enqueue(self, item):
+    def __init__(self) -> None:
+        """Initialize an empty queue using a doubly linked list."""
+        self._items = DoublyLinkedList()
+
+    def enqueue(self, item: Any) -> None:
         """Add an element to the end of the queue.
 
         Args:
             item: The value to be added.
         """
-        self._dll.append(item)
+        self._items.append(item)
 
-    def dequeue(self):
+    def dequeue(self) -> Any:
         """Remove and return the element from the front of the queue.
 
         Returns:
@@ -38,11 +41,11 @@ class Queue:
             IndexError: If the queue is empty.
         """
         try:
-            return self._dll.pop_front()
+            return self._items.pop_front()
         except IndexError:
             raise IndexError("Queue is empty")
 
-    def front(self):
+    def front(self) -> Any:
         """Return the first element of the queue without removing it.
 
         Returns:
@@ -52,11 +55,11 @@ class Queue:
             IndexError: If the queue is empty.
         """
         try:
-            return self._dll.peek_front()
+            return self._items.peek_front()
         except IndexError:
             raise IndexError("Queue is empty")
 
-    def back(self):
+    def back(self) -> Any:
         """Return the last element of the queue without removing it.
 
         Returns:
@@ -66,26 +69,26 @@ class Queue:
             IndexError: If the queue is empty.
         """
         try:
-            return self._dll.peek_back()
+            return self._items.peek_back()
         except IndexError:
             raise IndexError("Queue is empty")
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Return True if the queue is empty, else False."""
-        return self._dll.is_empty()
+        return self._items.is_empty()
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all elements from the queue."""
-        self._dll.clear()
+        self._items.clear()
 
-    def traverse(self):
+    def traverse(self) -> list[Any]:
         """Return a list of all elements in the queue."""
-        return self._dll.traverse()
+        return self._items.traverse()
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of elements in the queue."""
-        return len(self._dll)
+        return len(self._items)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the queue."""
         return f"Queue({self.traverse()})"

@@ -1,5 +1,5 @@
 import pytest
-from algorithms.recursion.arrays_recursion import sum, max, reverse
+from algorithms.recursion.recursion import sum, max, reverse
 
 
 # ====== Tests: sum ======

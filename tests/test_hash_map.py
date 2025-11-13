@@ -1,5 +1,5 @@
 import pytest
-from data_structures.hash_tables.hash_map import HashMap
+from src.data_structures.hash_tables.hash_map import HashMap
 
 # ====== Constants ======
 NUM_ELEMENTS = 10

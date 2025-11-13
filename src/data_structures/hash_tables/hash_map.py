@@ -39,7 +39,8 @@ class HashMap:
         return self._length == 0
 
     def put(self, key: Any, value: Any) -> None:
-        """Insert or update a key-value pair in the hash map.
+        """
+        Insert or update a key-value pair in the hash map.
 
         Args:
             key: Key to insert/update.
@@ -57,7 +58,8 @@ class HashMap:
         self._length += 1
 
     def get(self, key: Any) -> Any | None:
-        """Return the value for the given key, or None if key not found.
+        """
+        Return the value for the given key, or None if key not found.
 
         Args:
             key: Key to retrieve.
@@ -75,7 +77,8 @@ class HashMap:
         return None
 
     def remove(self, key: Any) -> bool:
-        """Remove a key-value pair by key.
+        """
+        Remove a key-value pair by key.
 
         Args:
             key: Key to remove.

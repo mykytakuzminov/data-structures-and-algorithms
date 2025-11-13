@@ -1,5 +1,5 @@
 import pytest
-from data_structures.stacks.stack import Stack
+from src.data_structures.stacks.stack import Stack
 
 # ====== Constants ======
 NUM_ELEMENTS = 5

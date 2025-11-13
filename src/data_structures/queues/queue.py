@@ -1,5 +1,7 @@
 from typing import Any
-from data_structures.linked_lists.doubly_linked_list import DoublyLinkedList
+from src.data_structures.linked_lists.doubly_linked_list import (
+    DoublyLinkedList,
+)
 
 
 class Queue:
@@ -24,7 +26,8 @@ class Queue:
         self._items = DoublyLinkedList()
 
     def enqueue(self, item: Any) -> None:
-        """Add an element to the end of the queue.
+        """
+        Add an element to the end of the queue.
 
         Args:
             item: The value to be added.
@@ -32,7 +35,8 @@ class Queue:
         self._items.append(item)
 
     def dequeue(self) -> Any:
-        """Remove and return the element from the front of the queue.
+        """
+        Remove and return the element from the front of the queue.
 
         Returns:
             The value of the removed element.
@@ -46,7 +50,8 @@ class Queue:
             raise IndexError("Queue is empty")
 
     def front(self) -> Any:
-        """Return the first element of the queue without removing it.
+        """
+        Return the first element of the queue without removing it.
 
         Returns:
             The value at the front of the queue.
@@ -60,7 +65,8 @@ class Queue:
             raise IndexError("Queue is empty")
 
     def back(self) -> Any:
-        """Return the last element of the queue without removing it.
+        """
+        Return the last element of the queue without removing it.
 
         Returns:
             The value at the back of the queue.

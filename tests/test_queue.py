@@ -1,5 +1,5 @@
 import pytest
-from data_structures.queues.queue import Queue
+from src.data_structures.queues.queue import Queue
 
 # ====== Constants ======
 NUM_ELEMENTS = 5

@@ -1,5 +1,5 @@
 import pytest
-from algorithms.searching.binary_search import binary_search
+from src.algorithms.searching.binary_search import binary_search
 
 
 # ====== Tests: Binary Search ======

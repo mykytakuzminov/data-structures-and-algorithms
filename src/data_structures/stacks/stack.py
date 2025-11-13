@@ -22,7 +22,8 @@ class Stack:
         self._items = []
 
     def push(self, item: Any) -> None:
-        """Add an element to the top of the stack.
+        """
+        Add an element to the top of the stack.
 
         Args:
             item: The value to be added.
@@ -30,7 +31,8 @@ class Stack:
         self._items.append(item)
 
     def pop(self) -> Any:
-        """Remove and return the element from the top of the stack.
+        """
+        Remove and return the element from the top of the stack.
 
         Returns:
             The value of the removed element.
@@ -43,7 +45,8 @@ class Stack:
         return self._items.pop()
 
     def peek(self) -> Any:
-        """Return the top element of the stack without removing it.
+        """
+        Return the top element of the stack without removing it.
 
         Returns:
             The value at the top of the stack.

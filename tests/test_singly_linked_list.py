@@ -1,5 +1,8 @@
 import pytest
-from data_structures.linked_lists.singly_linked_list import SinglyLinkedList
+from src.data_structures.linked_lists.singly_linked_list import (
+    SinglyLinkedList,
+)
+
 
 # ====== Constants ======
 NUM_ELEMENTS = 5

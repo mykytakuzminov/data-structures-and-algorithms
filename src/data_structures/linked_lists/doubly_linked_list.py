@@ -51,7 +51,8 @@ class DoublyLinkedList:
         return self._head is None
 
     def append(self, data: Any) -> None:
-        """Add an element at the end of the list.
+        """
+        Add an element at the end of the list.
 
         Args:
             data: The value to be added.
@@ -70,7 +71,8 @@ class DoublyLinkedList:
         self._length += 1
 
     def prepend(self, data: Any) -> None:
-        """Add an element at the beginning of the list.
+        """
+        Add an element at the beginning of the list.
 
         Args:
             data: The value to be added.
@@ -88,7 +90,8 @@ class DoublyLinkedList:
         self._length += 1
 
     def insert(self, index: int, data: Any) -> None:
-        """Insert a new element at a specific index.
+        """
+        Insert a new element at a specific index.
 
         Args:
             index: Position at which to insert the element.
@@ -132,7 +135,8 @@ class DoublyLinkedList:
         self._length += 1
 
     def delete(self, key: Any) -> bool:
-        """Delete the first element with the given value.
+        """
+        Delete the first element with the given value.
 
         Args:
             key: Value to delete.
@@ -161,7 +165,8 @@ class DoublyLinkedList:
         return False
 
     def search(self, key: Any) -> bool:
-        """Search for an element by value.
+        """
+        Search for an element by value.
 
         Args:
             key: Value to search for.
@@ -177,7 +182,8 @@ class DoublyLinkedList:
         return False
 
     def get(self, index: int) -> Any:
-        """Return the value of node at a specific index.
+        """
+        Return the value of node at a specific index.
 
         Args:
             index: Position of the element to retrieve.

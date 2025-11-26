@@ -14,12 +14,15 @@ class Stack:
         peek(): Return the top element without removing it.
         is_empty(): Check if the stack is empty.
         clear(): Remove all elements from the stack.
+        traverse(): Return a list of all elements.
     """
     _items: list[Any]
 
     def __init__(self) -> None:
         """Initialize an empty stack using a dynamic array."""
         self._items = []
+
+    # --- Modification Methods ---
 
     def push(self, item: Any) -> None:
         """
@@ -44,6 +47,14 @@ class Stack:
             raise IndexError("Stack is empty")
         return self._items.pop()
 
+    def clear(self) -> None:
+        """
+        Remove all elements from the stack.
+        """
+        self._items.clear()
+
+    # --- Access & Status Methods ---
+
     def peek(self) -> Any:
         """
         Return the top element of the stack without removing it.
@@ -59,21 +70,39 @@ class Stack:
         return self._items[-1]
 
     def is_empty(self) -> bool:
-        """Return True if the stack is empty, else False."""
+        """
+        Check if the stack contains no elements.
+
+        Returns:
+            True if the stack is empty, False otherwise.
+        """
         return len(self._items) == 0
 
-    def clear(self) -> None:
-        """Remove all elements from the stack."""
-        self._items.clear()
+    # --- Traversal & Helpers ---
 
     def traverse(self) -> list[Any]:
-        """Return a list of all elements in the stack."""
-        return self._items
+        """
+        Return a copy of all elements in the stack.
+
+        Returns:
+            A list containing all elements currently in the stack.
+        """
+        return list(self._items)
 
     def __len__(self) -> int:
-        """Return the number of elements in the stack."""
+        """
+        Get the number of elements in the stack.
+
+        Returns:
+            The count of items in the stack.
+        """
         return len(self._items)
 
     def __str__(self) -> str:
-        """Return a string representation of the stack."""
+        """
+        Return a string representation of the stack.
+
+        Returns:
+            String in format 'Stack([item1, item2, ...])'
+        """
         return f"Stack({self.traverse()})"

@@ -1,9 +1,10 @@
-from typing import TypeVar, Protocol
+from typing import TypeVar, Protocol, Any
 
 
 class Comparable(Protocol):
-    def __lt__(self, other: "Comparable", /) -> bool: ...
-    def __gt__(self, other: "Comparable", /) -> bool: ...
+    """Protocol for objects that support comparison operations."""
+    def __lt__(self, other: Any, /) -> bool: ...
+    def __gt__(self, other: Any, /) -> bool: ...
     def __eq__(self, other: object, /) -> bool: ...
 
 
@@ -12,15 +13,14 @@ T = TypeVar("T", bound=Comparable)
 
 def binary_search(arr: list[T], val: T) -> bool:
     """
-    Performs a binary search to determine if a value exists in a sorted list.
+    Performs a binary search on a sorted list.
 
     Args:
-        arr: A sorted list of elements.
-             Elements must support comparison operations.
-        val: The value to search for in the list.
+        arr: Sorted list of comparable elements (int, str, etc.).
+        val: Value to find.
 
     Returns:
-        True if the value is found in the list, False otherwise.
+        True if found, False otherwise.
     """
     left: int = 0
     right: int = len(arr) - 1

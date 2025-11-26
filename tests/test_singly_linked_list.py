@@ -4,9 +4,9 @@ from src.data_structures.linked_lists.singly_linked_list import (
 )
 
 
-# ====== Constants ======
+# --- Constants ---
 NUM_ELEMENTS = 5
-TEST_LIST = [n for n in range(5)]
+TEST_DATA = [n for n in range(NUM_ELEMENTS)]
 NEW_HEAD = 99
 NEW_MIDDLE = 55
 NEW_TAIL = 100
@@ -14,10 +14,10 @@ INVALID_LOW_INDEX = -1
 INVALID_HIGH_INDEX = NUM_ELEMENTS + 1
 NOT_EXISTING_VALUE = 999
 NOT_EXISTING_VALUES = [NEW_HEAD, NEW_MIDDLE, NEW_TAIL, NOT_EXISTING_VALUE]
-TEST_DATA = [(i, val) for i, val in enumerate(TEST_LIST)]
+PARAM_DATA = [(i, val) for i, val in enumerate(TEST_DATA)]
 
 
-# ====== Fixtures ======
+# --- Fixtures ---
 @pytest.fixture
 def empty_list():
     """Return an empty singly linked list."""
@@ -26,21 +26,21 @@ def empty_list():
 
 @pytest.fixture
 def populated_list():
-    """Return a singly linked list pre-populated with TEST_LIST values."""
+    """Return a singly linked list pre-populated with TEST_DATA values."""
     sll = SinglyLinkedList()
-    for n in TEST_LIST:
+    for n in TEST_DATA:
         sll.append(n)
     return sll
 
 
-# ====== Tests: Emptiness ======
+# --- Tests: Emptiness ---
 def test_is_empty(empty_list, populated_list):
     """Check is_empty() for empty and populated lists."""
     assert empty_list.is_empty()
     assert not populated_list.is_empty()
 
 
-# ====== Tests: Adding Elements ======
+# --- Tests: Adding Elements ---
 def test_append(empty_list):
     """Test append() adds elements to the end of the list."""
     empty_list.append(1)
@@ -57,7 +57,7 @@ def test_prepend(empty_list, populated_list):
     assert len(empty_list) == 1
 
     populated_list.prepend(NEW_HEAD)
-    assert populated_list.traverse() == [NEW_HEAD] + TEST_LIST
+    assert populated_list.traverse() == [NEW_HEAD] + TEST_DATA
     assert len(populated_list) == NUM_ELEMENTS + 1
 
 
@@ -76,7 +76,7 @@ def test_insert(populated_list):
     populated_list.insert(len(populated_list), NEW_TAIL)
     assert populated_list.traverse()[-1] == NEW_TAIL
 
-    # Verify length
+    # Verify length (original + 3 inserted)
     assert len(populated_list) == NUM_ELEMENTS + 3
 
 
@@ -88,27 +88,27 @@ def test_insert_index_error(populated_list):
         populated_list.insert(INVALID_HIGH_INDEX, NEW_MIDDLE)
 
 
-# ====== Tests: Removing Elements ======
+# --- Tests: Removing Elements ---
 def test_delete(populated_list):
     """Test delete() removes elements and handles non-existing values."""
     # Remove head
-    assert populated_list.delete(TEST_LIST[0])
-    assert TEST_LIST[0] not in populated_list.traverse()
+    assert populated_list.delete(TEST_DATA[0])
+    assert TEST_DATA[0] not in populated_list.traverse()
 
     # Remove middle
-    assert populated_list.delete(TEST_LIST[2])
-    assert TEST_LIST[2] not in populated_list.traverse()
+    assert populated_list.delete(TEST_DATA[2])
+    assert TEST_DATA[2] not in populated_list.traverse()
 
-    #  Remove tail
-    assert populated_list.delete(TEST_LIST[-1])
-    assert TEST_LIST[-1] not in populated_list.traverse()
+    # Remove tail
+    assert populated_list.delete(TEST_DATA[-1])
+    assert TEST_DATA[-1] not in populated_list.traverse()
 
     # Attempt to remove non-existing value
     assert not populated_list.delete(NOT_EXISTING_VALUE)
 
 
-# ====== Tests: Accessing Elements ======
-@pytest.mark.parametrize("index,expected", TEST_DATA)
+# --- Tests: Accessing Elements ---
+@pytest.mark.parametrize("index,expected", PARAM_DATA)
 def test_get(populated_list, index, expected):
     """Test get() returns correct element for valid indices."""
     assert populated_list.get(index) == expected
@@ -122,8 +122,8 @@ def test_get_index_error(populated_list):
         populated_list.get(INVALID_HIGH_INDEX)
 
 
-# ====== Tests: Searching Elements ======
-@pytest.mark.parametrize("value", TEST_LIST)
+# --- Tests: Searching Elements ---
+@pytest.mark.parametrize("value", TEST_DATA)
 def test_search_existing(populated_list, value):
     """Verify search() finds existing elements."""
     assert populated_list.search(value)
@@ -135,7 +135,7 @@ def test_search_not_existing(populated_list, value):
     assert not populated_list.search(value)
 
 
-# ====== Tests: Traversal ======
+# --- Tests: Traversal ---
 def test_traverse_empty(empty_list):
     """Check traverse() returns empty list for an empty linked list."""
     assert empty_list.traverse() == []
@@ -143,10 +143,10 @@ def test_traverse_empty(empty_list):
 
 def test_traverse_populated(populated_list):
     """Check traverse() returns all elements in correct order."""
-    assert populated_list.traverse() == TEST_LIST
+    assert populated_list.traverse() == TEST_DATA
 
 
-# ====== Tests: Clearing the List ======
+# --- Tests: Clearing the List ---
 def test_clear(empty_list, populated_list):
     """Check clear() empties the list and resets length."""
     empty_list.clear()
@@ -158,7 +158,7 @@ def test_clear(empty_list, populated_list):
     assert len(populated_list) == 0
 
 
-# ====== Tests: Length & String Representation ======
+# --- Tests: Length & String Representation ---
 def test_len(empty_list, populated_list):
     """Verify __len__() returns correct number of elements."""
     assert len(empty_list) == 0
@@ -168,4 +168,4 @@ def test_len(empty_list, populated_list):
 def test_str(empty_list, populated_list):
     """Verify __str__() returns correct string representation."""
     assert str(empty_list) == str([])
-    assert str(populated_list) == str(TEST_LIST)
+    assert str(populated_list) == str(TEST_DATA)

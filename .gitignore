@@ -15,21 +15,37 @@ dist/
 *.egg-info/
 *.egg
 
-# Pytest cache
+# Pytest & Coverage
 .pytest_cache/
+.coverage
 coverage.xml
 htmlcov/
 
-# Windows system files
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+# Type Checking (mypy)
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
-# VSCode
+# Environment Variables 
+.env
+.env.local
+.env.*.local
+
+# IDEs
 .vscode/
-
-# PyCharm
 .idea/
 
 # Logs
 *.log
+
+# Operating System Files
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+
+# Jupyter Notebooks
+.ipynb_checkpoints

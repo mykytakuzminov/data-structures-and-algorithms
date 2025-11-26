@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 class Node:
     """
-    Node class for singly linked list.
+    Node class for a singly linked list.
 
     Attributes:
         data: The value stored in the node.
@@ -13,25 +13,33 @@ class Node:
     next: Optional["Node"]
 
     def __init__(self, data: Any) -> None:
-        """Initialize a node with a given value."""
+        """
+        Initialize a node with a given value.
+
+        Args:
+            data: The value to be stored in the node.
+        """
         self.data = data
         self.next = None
 
 
 class SinglyLinkedList:
     """
-    Singly linked list with basic operations.
+    Singly Linked List implementation.
+
+    This list allows traversal in only one direction (forward).
+    It maintains a head pointer.
 
     Methods:
-        is_empty(): Check if the list is empty.
-        append(data): Add an element at the end of the list.
-        prepend(data): Add an element at the beginning of the list.
-        insert(index, data): Insert element at a specific index.
-        delete(key): Delete the first element with the given value.
-        search(key): Search for an element by value.
+        append(data): Add an element to the end.
+        prepend(data): Add an element to the beginning.
+        insert(index, data): Insert at a specific index.
+        delete(key): Remove the first occurrence of a value.
+        search(key): Check if a value exists.
         get(index): Get value at a specific index.
-        traverse(): Return all elements as a list.
-        clear(): Remove all elements from the list.
+        is_empty(): Check if the list is empty.
+        clear(): Remove all elements.
+        traverse(): Return a list of all elements.
     """
     _head: Optional[Node]
     _length: int
@@ -41,9 +49,7 @@ class SinglyLinkedList:
         self._head = None
         self._length = 0
 
-    def is_empty(self) -> bool:
-        """Return True if the list is empty, else False."""
-        return self._head is None
+    # --- Modification Methods (Insertion) ---
 
     def append(self, data: Any) -> None:
         """
@@ -69,7 +75,7 @@ class SinglyLinkedList:
         Add an element at the beginning of the list.
 
         Args:
-            data: Value to prepend to the list.
+            data: The value to be added.
         """
         new_node = Node(data)
 
@@ -84,7 +90,7 @@ class SinglyLinkedList:
 
         Args:
             index: Position at which to insert the element.
-            data: Value to insert.
+            data: The value to be added.
 
         Raises:
             IndexError: If index is out of range.
@@ -98,23 +104,26 @@ class SinglyLinkedList:
 
         new_node = Node(data)
         current = self._head
+
+        # Traverse to the node immediately before the index
         for _ in range(index - 1):
-            assert current is not None
-            current = current.next
+            if current:
+                current = current.next
 
-        assert current is not None
-
-        new_node.next = current.next
-        current.next = new_node
+        if current:
+            new_node.next = current.next
+            current.next = new_node
 
         self._length += 1
+
+    # --- Modification Methods (Deletion) ---
 
     def delete(self, key: Any) -> bool:
         """
         Delete the first element with the given value.
 
         Args:
-            key: Value to delete from the list.
+            key: Value to delete.
 
         Returns:
             True if an element was deleted, False otherwise.
@@ -136,6 +145,15 @@ class SinglyLinkedList:
             current = current.next
 
         return False
+
+    def clear(self) -> None:
+        """
+        Remove all elements from the list.
+        """
+        self._head = None
+        self._length = 0
+
+    # --- Access & Search Methods ---
 
     def search(self, key: Any) -> bool:
         """
@@ -172,16 +190,30 @@ class SinglyLinkedList:
 
         current = self._head
         for _ in range(index):
-            assert current is not None
-            current = current.next
+            if current:
+                current = current.next
 
-        assert current is not None
+        if current:
+            return current.data
 
-        return current.data
+        raise IndexError("Index out of range")
+
+    def is_empty(self) -> bool:
+        """
+        Check if the list contains no elements.
+
+        Returns:
+            True if the list is empty, False otherwise.
+        """
+        return self._head is None
 
     def traverse(self) -> list[Any]:
         """
-        Return a list of all elements in the linked list."""
+        Return a list of all elements in the linked list.
+
+        Returns:
+            A Python list containing all elements in order.
+        """
         elements = []
         current = self._head
         while current:
@@ -189,15 +221,22 @@ class SinglyLinkedList:
             current = current.next
         return elements
 
-    def clear(self) -> None:
-        """Remove all elements from the list."""
-        self._head = None
-        self._length = 0
+    # --- Internal/Testing Helpers ---
 
     def __len__(self) -> int:
-        """Return the number of nodes in the list."""
+        """
+        Get the number of nodes in the list.
+
+        Returns:
+            The count of nodes.
+        """
         return self._length
 
     def __str__(self) -> str:
-        """Return a string representation of the list."""
+        """
+        Return a string representation of the list.
+
+        Returns:
+            String representation of the internal list.
+        """
         return str(self.traverse())

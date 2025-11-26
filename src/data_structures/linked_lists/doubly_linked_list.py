@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 class Node:
     """
-    Node class for doubly linked list.
+    Node class for a doubly linked list.
 
     Attributes:
         data: The value stored in the node.
@@ -14,8 +14,13 @@ class Node:
     next: Optional["Node"]
     prev: Optional["Node"]
 
-    def __init__(self, data: Any):
-        """Initialize a node with a given value."""
+    def __init__(self, data: Any) -> None:
+        """
+        Initialize a node with a given value.
+
+        Args:
+            data: The value to be stored in the node.
+        """
         self.data = data
         self.next = None
         self.prev = None
@@ -23,18 +28,24 @@ class Node:
 
 class DoublyLinkedList:
     """
-    Doubly linked list with basic operations.
+    Doubly Linked List implementation.
+
+    This list allows traversal in both directions (forward and backward).
+    It maintains a head and a tail pointer for O(1) insertions at both ends.
 
     Methods:
-        is_empty(): Check if the list is empty.
-        append(data): Add an element at the end of the list.
-        prepend(data): Add an element at the beginning of the list.
-        insert(index, data): Insert element at a specific index.
-        delete(key): Delete the first element with the given value.
-        search(key): Search for an element by value.
+        append(data): Add an element to the end.
+        prepend(data): Add an element to the beginning.
+        insert(index, data): Insert at a specific index.
+        delete(key): Remove the first occurrence of a value.
+        pop_front(): Remove and return the first element.
+        search(key): Check if a value exists.
         get(index): Get value at a specific index.
-        traverse(): Return all elements as a list.
-        clear(): Remove all elements from the list.
+        peek_front(): Get the first value without removing.
+        peek_back(): Get the last value without removing.
+        is_empty(): Check if the list is empty.
+        clear(): Remove all elements.
+        traverse(): Return a list of all elements.
     """
     _head: Optional[Node]
     _tail: Optional[Node]
@@ -46,13 +57,11 @@ class DoublyLinkedList:
         self._tail = None
         self._length = 0
 
-    def is_empty(self) -> bool:
-        """Return True if the list is empty, else False."""
-        return self._head is None
+    # --- Modification Methods (Insertion) ---
 
     def append(self, data: Any) -> None:
         """
-        Add an element at the end of the list.
+        Add an element at the end of the list (Tail).
 
         Args:
             data: The value to be added.
@@ -63,16 +72,16 @@ class DoublyLinkedList:
             self._head = new_node
             self._tail = new_node
         else:
-            assert self._tail is not None
-            self._tail.next = new_node
-            new_node.prev = self._tail
-            self._tail = new_node
+            if self._tail:
+                self._tail.next = new_node
+                new_node.prev = self._tail
+                self._tail = new_node
 
         self._length += 1
 
     def prepend(self, data: Any) -> None:
         """
-        Add an element at the beginning of the list.
+        Add an element at the beginning of the list (Head).
 
         Args:
             data: The value to be added.
@@ -112,27 +121,28 @@ class DoublyLinkedList:
 
         new_node = Node(data)
 
-        # Decide traversal direction for efficiency
+        # Optimization: Decide traversal direction (start from head or tail)
         if index <= self._length // 2:
             current = self._head
             for _ in range(index):
-                assert current is not None
-                current = current.next
+                if current:
+                    current = current.next
         else:
             current = self._tail
             for _ in range(self._length - 1, index, -1):
-                assert current is not None
-                current = current.prev
+                if current:
+                    current = current.prev
 
-        assert current is not None
-        assert current.prev is not None
-
-        new_node.next = current
-        new_node.prev = current.prev
-        current.prev.next = new_node
-        current.prev = new_node
+        # Current is now the node that will be *after* the new node
+        if current and current.prev:
+            new_node.next = current
+            new_node.prev = current.prev
+            current.prev.next = new_node
+            current.prev = new_node
 
         self._length += 1
+
+    # --- Modification Methods (Deletion) ---
 
     def delete(self, key: Any) -> bool:
         """
@@ -147,11 +157,13 @@ class DoublyLinkedList:
         current = self._head
         while current:
             if current.data == key:
+                # If it's not the head
                 if current.prev:
                     current.prev.next = current.next
                 else:
                     self._head = current.next
 
+                # If it's not the tail
                 if current.next:
                     current.next.prev = current.prev
                 else:
@@ -163,6 +175,33 @@ class DoublyLinkedList:
             current = current.next
 
         return False
+
+    def pop_front(self) -> Any:
+        """
+        Remove and return the element at the head of the list.
+
+        Returns:
+            The value of the removed node.
+
+        Raises:
+            IndexError: If the list is empty.
+        """
+        if self.is_empty() or self._head is None:
+            raise IndexError("List is empty")
+
+        value = self._head.data
+        self._head = self._head.next
+
+        if self._head:
+            self._head.prev = None
+        else:
+            # List became empty
+            self._tail = None
+
+        self._length -= 1
+        return value
+
+    # --- Access & Search Methods ---
 
     def search(self, key: Any) -> bool:
         """
@@ -183,7 +222,7 @@ class DoublyLinkedList:
 
     def get(self, index: int) -> Any:
         """
-        Return the value of node at a specific index.
+        Return the value of the node at a specific index.
 
         Args:
             index: Position of the element to retrieve.
@@ -197,23 +236,77 @@ class DoublyLinkedList:
         if index < 0 or index >= self._length:
             raise IndexError("Index out of range")
 
+        # Optimization: Traverse from nearest end
         if index <= self._length // 2:
             current = self._head
             for _ in range(index):
-                assert current is not None
-                current = current.next
+                if current:
+                    current = current.next
         else:
             current = self._tail
             for _ in range(self._length - 1, index, -1):
-                assert current is not None
-                current = current.prev
+                if current:
+                    current = current.prev
 
-        assert current is not None
+        if current:
+            return current.data
 
-        return current.data
+        raise IndexError("Index out of range")
+
+    def peek_front(self) -> Any:
+        """
+        Return the value of the head node without removing it.
+
+        Returns:
+            The value at the front.
+
+        Raises:
+            IndexError: If the list is empty.
+        """
+        if self.is_empty() or self._head is None:
+            raise IndexError("List is empty")
+        return self._head.data
+
+    def peek_back(self) -> Any:
+        """
+        Return the value of the tail node without removing it.
+
+        Returns:
+            The value at the back.
+
+        Raises:
+            IndexError: If the list is empty.
+        """
+        if self.is_empty() or self._tail is None:
+            raise IndexError("List is empty")
+        return self._tail.data
+
+    # --- Status & Utility Methods ---
+
+    def is_empty(self) -> bool:
+        """
+        Check if the list contains no elements.
+
+        Returns:
+            True if the list is empty, False otherwise.
+        """
+        return self._head is None
+
+    def clear(self) -> None:
+        """
+        Remove all elements from the list.
+        """
+        self._head = None
+        self._tail = None
+        self._length = 0
 
     def traverse(self) -> list[Any]:
-        """Return a list of all elements in the linked list."""
+        """
+        Return a list of all elements in the linked list.
+
+        Returns:
+            A Python list containing all elements in order.
+        """
         elements = []
         current = self._head
         while current:
@@ -221,52 +314,30 @@ class DoublyLinkedList:
             current = current.next
         return elements
 
-    def clear(self) -> None:
-        """Remove all elements from the list."""
-        self._head = None
-        self._tail = None
-        self._length = 0
-
-    def pop_front(self) -> Any:
-        """Remove and return the element at the head of the list."""
-        if self._head is None:
-            raise IndexError("List is empty")
-
-        value = self._head.data
-        self._head = self._head.next
-
-        if self._head:
-            self._head.prev = None
-        else:
-            self._tail = None
-
-        self._length -= 1
-        return value
-
-    def peek_front(self) -> Any:
-        """Return the value of the head node without removing it."""
-        if self._head is None:
-            raise IndexError("List is empty")
-        return self._head.data
-
-    def peek_back(self) -> Any:
-        """Return the value of the tail node without removing it."""
-        if self._tail is None:
-            raise IndexError("List is empty")
-        return self._tail.data
+    # --- Internal/Testing Helpers ---
 
     def _get_head(self) -> Node | None:
-        """Return the head node (for testing purposes)."""
+        """Return the head node (for internal testing)."""
         return self._head
 
     def _get_tail(self) -> Node | None:
-        """Return the tail node (for testing purposes)."""
+        """Return the tail node (for internal testing)."""
         return self._tail
 
     def __len__(self) -> int:
-        """Return the number of nodes in the list."""
+        """
+        Get the number of nodes in the list.
+
+        Returns:
+            The count of nodes.
+        """
         return self._length
 
     def __str__(self) -> str:
-        """Return a string representation of the list."""
+        """
+        Return a string representation of the list.
+
+        Returns:
+            String representation of the internal list.
+        """
         return str(self.traverse())

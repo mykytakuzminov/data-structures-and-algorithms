@@ -70,6 +70,12 @@ class BinaryTree:
         else:
             self._insert_recursive(self._root, data)
 
+    def clear(self) -> None:
+        """
+        Remove all nodes from the tree.
+        """
+        self._root = None
+
     # --- Query & Status Methods ---
 
     def search(self, data: Any) -> bool:
@@ -117,18 +123,6 @@ class BinaryTree:
             return 0
 
         return self._height(self._root)
-
-    def size(self) -> int:
-        """
-        Calculate the total number of nodes in the tree.
-
-        Returns:
-            The total count of nodes.
-        """
-        if self._root is None:
-            return 0
-
-        return self._size(self._root)
 
     # --- Traversal Methods ---
 
@@ -272,3 +266,15 @@ class BinaryTree:
             return 0
 
         return 1 + self._size(root.left) + self._size(root.right)
+
+    def __len__(self) -> int:
+        """
+        Calculate the total number of nodes in the tree.
+
+        Returns:
+            The total count of nodes.
+        """
+        if self._root is None:
+            return 0
+
+        return self._size(self._root)

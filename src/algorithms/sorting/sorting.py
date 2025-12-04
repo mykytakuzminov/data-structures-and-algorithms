@@ -6,6 +6,8 @@ class Comparable(Protocol):
     def __lt__(self, other: Any, /) -> bool: ...
     def __gt__(self, other: Any, /) -> bool: ...
     def __eq__(self, other: object, /) -> bool: ...
+    def __le__(self, other: Any, /) -> bool: ...
+    def __ge__(self, other: Any, /) -> bool: ...
 
 
 T = TypeVar("T", bound=Comparable)
@@ -151,3 +153,40 @@ def merge_sort(arr: list[T]) -> list[T]:
     sorted_arr.extend(R[r:])
 
     return sorted_arr
+
+
+def quick_sort(arr: list[T]) -> list[T]:
+    """
+    Sorts a list in ascending order using the Quick Sort algorithm.
+
+    Quick Sort is a highly efficient, comparison-based sorting algorithm that
+    uses a Divide and Conquer strategy. It works by selecting a 'pivot' element
+    from the array and partitioning the other elements into two sub-arrays,
+    according to whether they are less than or greater than the pivot. The
+    sub-arrays are then recursively sorted.
+
+    Complexity:
+        - Best Case (optimal pivot choice): O(n log n)
+        - Average Case: O(n log n)
+        - Worst Case (poor pivot choice, e.g., already sorted): O(n^2)
+
+    Args:
+        arr: A list of elements that supports comparison operations (e.g., int, float).
+
+    Returns:
+        A new list containing the sorted elements. (Note: This is not an in-place sort.)
+    """
+    n = len(arr)
+
+    if n <= 1:
+        return arr
+
+    p = arr[-1]
+
+    L = [n for n in arr[:-1] if n <= p]
+    R = [n for n in arr[:-1] if n > p]
+
+    L = quick_sort(L)
+    R = quick_sort(R)
+
+    return L + [p] + R

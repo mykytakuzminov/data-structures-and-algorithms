@@ -190,3 +190,44 @@ def quick_sort(arr: list[T]) -> list[T]:
     R = quick_sort(R)
 
     return L + [p] + R
+
+
+def counting_sort(arr: list[int]) -> None:
+    """
+    Sorts a list of non-negative integers using the Counting Sort algorithm.
+
+    Counting Sort is a non-comparison-based integer sorting algorithm. It works
+    by counting the number of occurrences of each distinct element in the input
+    array and then calculating the position of each element in the output sequence.
+
+    Constraints:
+        - The input must consist of non-negative integers.
+        - The algorithm is most efficient when the range of input numbers (k)
+          is not significantly larger than the number of elements (n).
+
+    Complexity:
+        - Time Complexity: O(n + k), where n is the number of elements
+          and k is the range of non-negative input values (max(arr) + 1).
+        - Space Complexity: O(k)
+
+    Args:
+        arr: A list of non-negative integers to be sorted.
+             The sort is performed in-place in this implementation.
+    """
+    n = len(arr)
+
+    if n <= 1:
+        return
+
+    maxx = max(arr)
+    counts = [0] * (maxx + 1)
+
+    for x in arr:
+        counts[x] += 1
+
+    i = 0
+    for c in range(maxx + 1):
+        while counts[c] > 0:
+            arr[i] = c
+            i += 1
+            counts[c] -= 1

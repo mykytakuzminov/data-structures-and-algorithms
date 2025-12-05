@@ -104,92 +104,62 @@ def selection_sort(arr: list[T]) -> None:
         arr[i], arr[min_index] = arr[min_index], arr[i]
 
 
-def merge_sort(arr: list[T]) -> list[T]:
+def merge_sort(arr: list[T]) -> None:
     """
-    Sorts a list in ascending order using the Merge Sort algorithm.
+    Sorts a list in ascending order using the Merge Sort algorithm (Divide and Conquer).
 
-    Merge Sort is a Divide and Conquer algorithm. It recursively divides the
-    list into halves until they contain only one element (which is sorted),
-    and then merges those sublists to form a new sorted list.
+    Merge Sort is a stable, comparison-based algorithm that recursively divides
+    the list into halves until single-element sublists are obtained. It then
+    merges these sublists in a way that results in a sorted list.
+    The time complexity relies on using O(n) auxiliary space for the merge step.
 
     Complexity:
-        - Best Case: O(n log n)
+        - Best Case (already sorted): O(n log n)
         - Average Case: O(n log n)
-        - Worst Case: O(n log n)
+        - Worst Case (reverse sorted): O(n log n)
+        - Space Complexity: O(n) (due to auxiliary arrays in merge)
 
     Args:
         arr: A list of elements that supports comparison operations (e.g., int, float).
-
-    Returns:
-        A new list containing the sorted elements. (Note: This is not an in-place sort.)
+             The sort is performed in-place (with O(n) auxiliary space).
     """
     n = len(arr)
 
     if n <= 1:
-        return arr
+        return
 
-    m = n // 2
-    L = arr[:m]
-    R = arr[m:]
-
-    L = merge_sort(L)
-    R = merge_sort(R)
-
-    l, r = 0, 0
-    L_len = len(L)
-    R_len = len(R)
-
-    sorted_arr: list[T] = []
-
-    while l < L_len and r < R_len:
-        if L[l] < R[r]:
-            sorted_arr.append(L[l])
-            l += 1
-        else:
-            sorted_arr.append(R[r])
-            r += 1
-
-    sorted_arr.extend(L[l:])
-    sorted_arr.extend(R[r:])
-
-    return sorted_arr
+    _merge_sort_partition(arr, 0, n - 1)
 
 
-def quick_sort(arr: list[T]) -> list[T]:
+def quick_sort(arr: list[T]) -> None:
     """
-    Sorts a list in ascending order using the Quick Sort algorithm.
+    Sorts a list in ascending order using the Quick Sort algorithm (Divide and Conquer).
 
-    Quick Sort is a highly efficient, comparison-based sorting algorithm that
-    uses a Divide and Conquer strategy. It works by selecting a 'pivot' element
-    from the array and partitioning the other elements into two sub-arrays,
-    according to whether they are less than or greater than the pivot. The
-    sub-arrays are then recursively sorted.
+    Quick Sort is an in-place, comparison-based algorithm that picks an element
+    as a pivot and partitions the list around the picked pivot. The partitioning
+    places the pivot in its correct sorted position, with all smaller elements
+    to its left and all greater elements to its right. It then recursively
+    sorts the sub-lists.
+
+    It is generally one of the fastest sorting algorithms in practice.
+    The space complexity is O(log n) due to the recursive call stack.
 
     Complexity:
-        - Best Case (optimal pivot choice): O(n log n)
+        - Best Case (good pivot selection): O(n log n)
         - Average Case: O(n log n)
-        - Worst Case (poor pivot choice, e.g., already sorted): O(n^2)
+        - Worst Case (bad pivot selection, e.g., already sorted): O(n^2)
+        - Space Complexity: O(log n) (due to recursion stack)
 
     Args:
         arr: A list of elements that supports comparison operations (e.g., int, float).
-
-    Returns:
-        A new list containing the sorted elements. (Note: This is not an in-place sort.)
+             The sort is performed in-place.
     """
     n = len(arr)
 
     if n <= 1:
-        return arr
+        return
 
-    p = arr[-1]
-
-    L = [n for n in arr[:-1] if n <= p]
-    R = [n for n in arr[:-1] if n > p]
-
-    L = quick_sort(L)
-    R = quick_sort(R)
-
-    return L + [p] + R
+    _quick_sort_helper(arr, 0, n - 1)
 
 
 def counting_sort(arr: list[int]) -> None:
@@ -231,3 +201,125 @@ def counting_sort(arr: list[int]) -> None:
             arr[i] = c
             i += 1
             counts[c] -= 1
+
+
+def _merge_sort_helper(arr: list[T], left: int, mid: int, right: int) -> None:
+    """
+    Combines two already sorted sub-arrays into a single sorted sub-array.
+
+    This function performs the merging step of the Merge Sort algorithm, combining
+    the sorted left sub-array (arr[left...mid]) and the sorted right sub-array
+    (arr[mid+1...right]) back into the original array.
+
+    It uses auxiliary space (O(n)) to store the sub-arrays for comparison,
+    which is essential for maintaining the O(n log n) time complexity.
+
+    Args:
+        arr: The list containing the sub-arrays to be merged. The merge is
+             performed in-place within the boundaries [left, right].
+        left: The starting index of the first (left) sorted sub-array.
+        mid: The ending index of the first (left) sorted sub-array.
+        right: The ending index of the second (right) sorted sub-array.
+    """
+    L_len = mid - left + 1
+    R_len = right - mid
+
+    L = [arr[left + i] for i in range(L_len)]
+    R = [arr[mid + i + 1] for i in range(R_len)]
+
+    li, ri = 0, 0
+    i = left
+
+    while li < L_len and ri < R_len:
+        if L[li] <= R[ri]:
+            arr[i] = L[li]
+            li += 1
+        else:
+            arr[i] = R[ri]
+            ri += 1
+        i += 1
+
+    while li < L_len:
+        arr[i] = L[li]
+        li += 1
+        i += 1
+
+    while ri < R_len:
+        arr[i] = R[ri]
+        ri += 1
+        i += 1
+
+
+def _merge_sort_partition(arr: list[T], left: int, right: int) -> None:
+    """
+    The recursive core function for the Merge Sort algorithm (Divide step).
+
+    This function recursively divides the array into two halves until the sub-arrays
+    contain at most one element (base case). Once the base case is reached, it
+    calls the _merge function to combine the sorted halves.
+
+    Complexity:
+        - Time: The recursive calls define the O(log n) depth of the algorithm.
+
+    Args:
+        arr: The list being sorted.
+        left: The starting index of the current partition.
+        right: The ending index of the current partition.
+    """
+    if left < right:
+        mid = (left + right) // 2
+
+        _merge_sort_partition(arr, left, mid)
+        _merge_sort_partition(arr, mid + 1, right)
+
+        _merge_sort_helper(arr, left, mid, right)
+
+
+def _quick_sort_helper(arr: list[T], left: int, right: int) -> None:
+    """
+    The recursive core function for the Quick Sort algorithm.
+
+    This function recursively calls itself on the sub-arrays created by the
+    partition step, effectively implementing the Divide and Conquer strategy.
+
+    Args:
+        arr: The list being sorted.
+        left: The starting index of the current partition.
+        right: The ending index of the current partition.
+    """
+    if left < right:
+        pi = _quick_sort_partition(arr, left, right)
+
+        _quick_sort_helper(arr, left, pi - 1)
+        _quick_sort_helper(arr, pi + 1, right)
+
+
+def _quick_sort_partition(arr: list[T], left: int, right: int) -> int:
+    """
+    Partitions the sub-array arr[l...r] around a pivot element.
+
+    This function selects the last element as the **pivot** (pivot). It rearranges
+    the sub-array such that all elements less than or equal to the pivot are
+    placed before it, and all elements greater than the pivot are placed after it.
+    It then places the pivot in its correct sorted position and returns its index.
+
+    Args:
+        arr: The list containing the sub-array to be partitioned.
+        left: The starting index of the sub-array.
+        right: The ending index of the sub-array (the pivot is chosen as arr[r]).
+
+    Returns:
+        The index of the pivot element after partitioning (its final sorted position).
+    """
+    pivot = arr[right]
+    j = left - 1
+
+    for i in range(left, right):
+        if arr[i] <= pivot:
+            j += 1
+
+            arr[j], arr[i] = arr[i], arr[j]
+
+    arr[j + 1], arr[right] = arr[right], arr[j + 1]
+
+    return j + 1

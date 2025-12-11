@@ -17,6 +17,7 @@ All implementations are fully typed (using `typing`) and tested with `pytest`.
 ### Algorithms
 - [x] **Binary Search** (Generic implementation)
 - [x] **Recursion** (Factorial, Fibonacci, Sums)
+- [x] **Sorting** (Bubble, Insertion, Selection, Merge, Quick, Counting)
 
 ---
 

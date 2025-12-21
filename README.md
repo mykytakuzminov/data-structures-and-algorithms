@@ -13,6 +13,7 @@ All implementations are fully typed (using `typing`) and tested with `pytest`.
 - [x] **Linked Lists** (Singly & Doubly)
 - [x] **Hash Map** (with chaining for collisions)
 - [x] **Binary Tree** (Binary Search Tree)
+- [x] **Heap** (Max & Min)
 
 ### Algorithms
 - [x] **Binary Search** (Generic implementation)

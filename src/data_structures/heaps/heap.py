@@ -121,6 +121,18 @@ class Heap:
             raise IndexError("peek from an empty heap")
         return self._heap[0]
 
+    def traverse(self) -> list[Any]:
+        """
+        Return a copy of the internal array representing the heap.
+
+        This provides a level-order traversal of the underlying
+        complete binary tree.
+
+        Returns:
+            A list of all elements in their current heap order.
+        """
+        return list(self._heap)
+
     def is_empty(self) -> bool:
         """
         Check if the heap contains no elements.

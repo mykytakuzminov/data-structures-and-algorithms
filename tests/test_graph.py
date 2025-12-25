@@ -49,18 +49,18 @@ def test_is_empty(empty_graph, populated_graph):
 
 def test_size(empty_graph, populated_graph):
     """Verify size property returns the correct node count."""
-    assert empty_graph.size == 0
-    assert populated_graph.size == GRAPH_SIZE
+    assert len(empty_graph) == 0
+    assert len(populated_graph) == GRAPH_SIZE
 
 
 # --- Tests: Modification Methods ---
 def test_add_node(empty_graph):
     """Test adding nodes and ensuring idempotency (no duplicates)."""
     empty_graph.add_node("A")
-    assert empty_graph.size == 1
+    assert len(empty_graph) == 1
 
     empty_graph.add_node("A")
-    assert empty_graph.size == 1
+    assert len(empty_graph) == 1
 
 
 def test_add_edge_directed_vs_undirected(empty_graph):
@@ -77,7 +77,7 @@ def test_add_edge_directed_vs_undirected(empty_graph):
 def test_remove_node(populated_graph):
     """Test removing a node and cleaning up all associated connections."""
     populated_graph.remove_node(1)
-    assert populated_graph.size == 3
+    assert len(populated_graph) == 3
     assert populated_graph.has_edge(1, 2) is False
 
     assert 1 not in populated_graph.get_neighbors(2)
@@ -89,7 +89,7 @@ def test_remove_edge(populated_graph):
     populated_graph.remove_edge(1, 2, directed=False)
     assert populated_graph.has_edge(1, 2) is False
     assert populated_graph.has_edge(2, 1) is False
-    assert populated_graph.size == 4
+    assert len(populated_graph) == 4
 
 
 # --- Tests: Access & Search Methods ---

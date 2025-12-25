@@ -45,10 +45,10 @@ def populated_min():
 # --- Tests: Status & Utility ---
 def test_is_empty(empty_max, empty_min, populated_max, populated_min):
     """Check is_empty() for all heap types."""
-    assert empty_max.is_empty()
-    assert empty_min.is_empty()
-    assert not populated_max.is_empty()
-    assert not populated_min.is_empty()
+    assert empty_max.is_empty
+    assert empty_min.is_empty
+    assert not populated_max.is_empty
+    assert not populated_min.is_empty
 
 
 def test_len(empty_max, empty_min, populated_max, populated_min):
@@ -65,8 +65,8 @@ def test_heapify_logic(empty_max, empty_min):
     empty_max.heapify(list(TEST_DATA_INPUT))
     empty_min.heapify(list(TEST_DATA_INPUT))
 
-    assert empty_max.traverse() == HEAPIFIED_MAX_EXPECTED
-    assert empty_min.traverse() == HEAPIFIED_MIN_EXPECTED
+    assert list(empty_max) == HEAPIFIED_MAX_EXPECTED
+    assert list(empty_min) == HEAPIFIED_MIN_EXPECTED
 
 
 def test_push_logic(empty_max, empty_min):
@@ -122,22 +122,22 @@ def test_peek_empty_raises(empty_max, empty_min):
 def test_sort_preserves_state(populated_max, populated_min):
     """Ensure sort() returns sorted list but doesn't destroy the heap."""
     assert populated_max.sort() == SORTED_DESC
-    assert populated_max.traverse() == HEAPIFIED_MAX_EXPECTED
+    assert list(populated_max) == HEAPIFIED_MAX_EXPECTED
 
     assert populated_min.sort() == SORTED_ASC
-    assert populated_min.traverse() == HEAPIFIED_MIN_EXPECTED
+    assert list(populated_min) == HEAPIFIED_MIN_EXPECTED
 
 
 def test_traverse_isolation(populated_max):
     """Check that traverse() returns a copy of the internal list."""
-    t = populated_max.traverse()
+    t = list(populated_max)
     t.clear()
-    assert not populated_max.is_empty()
+    assert not populated_max.is_empty
 
 
 def test_clear(populated_max, populated_min):
     """Verify clear() resets both heap types."""
     populated_max.clear()
     populated_min.clear()
-    assert len(populated_max) == 0 and populated_max.is_empty()
-    assert len(populated_min) == 0 and populated_min.is_empty()
+    assert len(populated_max) == 0 and populated_max.is_empty
+    assert len(populated_min) == 0 and populated_min.is_empty

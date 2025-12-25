@@ -11,7 +11,7 @@ class Comparable(Protocol):
 T = TypeVar("T", bound=Comparable)
 
 
-def binary_search(arr: list[T], val: T) -> bool:
+def binary_search(arr: list[T], value: T) -> bool:
     """
     Performs a binary search on a sorted list.
 
@@ -28,11 +28,11 @@ def binary_search(arr: list[T], val: T) -> bool:
     while left <= right:
         m = left + ((right - left) // 2)
 
-        if val == arr[m]:
+        if value == arr[m]:
             return True
-        elif val < arr[m]:
+        elif value < arr[m]:
             right = m - 1
-        elif val > arr[m]:
+        else:
             left = m + 1
 
     return False

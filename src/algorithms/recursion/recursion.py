@@ -82,10 +82,8 @@ def factorial(n: int) -> int:
     """
     if not isinstance(n, int):
         raise TypeError(f"Expected integer, got {type(n).__name__}.")
-
     if n < 0:
         raise ValueError("Factorial is not defined for negative numbers.")
-
     if n in (0, 1):
         return 1
 
@@ -108,10 +106,8 @@ def fibonacci(n: int) -> int:
     """
     if not isinstance(n, int):
         raise TypeError(f"Expected integer, got {type(n).__name__}.")
-
     if n < 0:
         raise ValueError("Fibonacci is not defined for negative numbers.")
-
     if n == 0:
         return 0
     if n == 1:
@@ -134,7 +130,6 @@ def sum_nested_list(arr: list[int | float | list]) -> int | float:
         TypeError: If an element is neither a number nor a list.
     """
     result: int | float = 0
-
     for el in arr:
         if isinstance(el, list):
             result += sum_nested_list(el)
@@ -142,5 +137,4 @@ def sum_nested_list(arr: list[int | float | list]) -> int | float:
             result += el
         else:
             raise TypeError(f"Unsupported element type: {type(el).__name__}")
-
     return result

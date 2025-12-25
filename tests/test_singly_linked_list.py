@@ -36,8 +36,8 @@ def populated_list():
 # --- Tests: Emptiness ---
 def test_is_empty(empty_list, populated_list):
     """Check is_empty() for empty and populated lists."""
-    assert empty_list.is_empty()
-    assert not populated_list.is_empty()
+    assert empty_list.is_empty
+    assert not populated_list.is_empty
 
 
 # --- Tests: Adding Elements ---
@@ -46,18 +46,18 @@ def test_append(empty_list):
     empty_list.append(1)
     empty_list.append(2)
     empty_list.append(3)
-    assert empty_list.traverse() == [1, 2, 3]
+    assert list(empty_list) == [1, 2, 3]
     assert len(empty_list) == 3
 
 
 def test_prepend(empty_list, populated_list):
     """Test prepend() adds elements to the beginning of the list."""
     empty_list.prepend(NEW_HEAD)
-    assert empty_list.traverse() == [NEW_HEAD]
+    assert list(empty_list) == [NEW_HEAD]
     assert len(empty_list) == 1
 
     populated_list.prepend(NEW_HEAD)
-    assert populated_list.traverse() == [NEW_HEAD] + TEST_DATA
+    assert list(populated_list) == [NEW_HEAD] + TEST_DATA
     assert len(populated_list) == NUM_ELEMENTS + 1
 
 
@@ -65,16 +65,16 @@ def test_insert(populated_list):
     """Test insert() at head, middle, and tail positions."""
     # Insert at head
     populated_list.insert(0, NEW_HEAD)
-    assert populated_list.traverse()[0] == NEW_HEAD
+    assert list(populated_list)[0] == NEW_HEAD
 
     # Insert at middle
     middle_index = NUM_ELEMENTS // 2
     populated_list.insert(middle_index, NEW_MIDDLE)
-    assert populated_list.traverse()[middle_index] == NEW_MIDDLE
+    assert list(populated_list)[middle_index] == NEW_MIDDLE
 
     # Insert at tail
     populated_list.insert(len(populated_list), NEW_TAIL)
-    assert populated_list.traverse()[-1] == NEW_TAIL
+    assert list(populated_list)[-1] == NEW_TAIL
 
     # Verify length (original + 3 inserted)
     assert len(populated_list) == NUM_ELEMENTS + 3
@@ -93,15 +93,15 @@ def test_delete(populated_list):
     """Test delete() removes elements and handles non-existing values."""
     # Remove head
     assert populated_list.delete(TEST_DATA[0])
-    assert TEST_DATA[0] not in populated_list.traverse()
+    assert TEST_DATA[0] not in list(populated_list)
 
     # Remove middle
     assert populated_list.delete(TEST_DATA[2])
-    assert TEST_DATA[2] not in populated_list.traverse()
+    assert TEST_DATA[2] not in list(populated_list)
 
     # Remove tail
     assert populated_list.delete(TEST_DATA[-1])
-    assert TEST_DATA[-1] not in populated_list.traverse()
+    assert TEST_DATA[-1] not in list(populated_list)
 
     # Attempt to remove non-existing value
     assert not populated_list.delete(NOT_EXISTING_VALUE)
@@ -138,23 +138,23 @@ def test_search_not_existing(populated_list, value):
 # --- Tests: Traversal ---
 def test_traverse_empty(empty_list):
     """Check traverse() returns empty list for an empty linked list."""
-    assert empty_list.traverse() == []
+    assert list(empty_list) == []
 
 
 def test_traverse_populated(populated_list):
     """Check traverse() returns all elements in correct order."""
-    assert populated_list.traverse() == TEST_DATA
+    assert list(populated_list) == TEST_DATA
 
 
 # --- Tests: Clearing the List ---
 def test_clear(empty_list, populated_list):
     """Check clear() empties the list and resets length."""
     empty_list.clear()
-    assert empty_list.traverse() == []
+    assert list(empty_list) == []
     assert len(empty_list) == 0
 
     populated_list.clear()
-    assert populated_list.traverse() == []
+    assert list(populated_list) == []
     assert len(populated_list) == 0
 
 
@@ -167,5 +167,5 @@ def test_len(empty_list, populated_list):
 
 def test_str(empty_list, populated_list):
     """Verify __str__() returns correct string representation."""
-    assert str(empty_list) == str([])
-    assert str(populated_list) == str(TEST_DATA)
+    assert str(empty_list) == "SinglyLinkedList([])"
+    assert str(populated_list) == f"SinglyLinkedList({TEST_DATA})"

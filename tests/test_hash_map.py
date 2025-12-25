@@ -35,8 +35,8 @@ def populated_hash_map():
 # --- Tests: Emptiness ---
 def test_is_empty(empty_hash_map, populated_hash_map):
     """Check is_empty() for empty and populated HashMap."""
-    assert empty_hash_map.is_empty()
-    assert not populated_hash_map.is_empty()
+    assert empty_hash_map.is_empty
+    assert not populated_hash_map.is_empty
 
 
 # --- Tests: Adding & Updating Keys ---
@@ -122,7 +122,7 @@ def test_clear(populated_hash_map):
     """Check clear() removes all items."""
     populated_hash_map.clear()
     assert len(populated_hash_map) == 0
-    assert populated_hash_map.is_empty()
+    assert populated_hash_map.is_empty
     assert populated_hash_map.keys() == []
 
 

@@ -1,30 +1,42 @@
-from typing import Any
+from __future__ import annotations
+from typing import TypeVar, Generic, Iterator
+
+T = TypeVar("T")
 
 
-class Stack:
+class Stack(Generic[T]):
     """
     Stack data structure implemented using a dynamic array (Python list).
 
-    The stack follows the LIFO (Last In, First Out) principle.
-    Elements are added and removed from the top of the stack.
-
-    Methods:
-        push(item): Add an element to the top of the stack.
-        pop(): Remove and return the element from the top.
-        peek(): Return the top element without removing it.
-        is_empty(): Check if the stack is empty.
-        clear(): Remove all elements from the stack.
-        traverse(): Return a list of all elements.
+    Attributes:
+        _items: Internal list to store stack elements.
     """
-    _items: list[Any]
+    _items: list[T]
 
     def __init__(self) -> None:
         """Initialize an empty stack using a dynamic array."""
         self._items = []
 
+    def __len__(self) -> int:
+        """Return the number of elements in the stack."""
+        return len(self._items)
+
+    def __repr__(self) -> str:
+        """Return a string representation for debugging."""
+        return f"Stack({self._items})"
+
+    def __iter__(self) -> Iterator[T]:
+        """Allow iteration over stack elements (from bottom to top)."""
+        return iter(self._items)
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the stack contains no elements."""
+        return len(self._items) == 0
+
     # --- Modification Methods ---
 
-    def push(self, item: Any) -> None:
+    def push(self, item: T) -> None:
         """
         Add an element to the top of the stack.
 
@@ -33,7 +45,7 @@ class Stack:
         """
         self._items.append(item)
 
-    def pop(self) -> Any:
+    def pop(self) -> T:
         """
         Remove and return the element from the top of the stack.
 
@@ -43,19 +55,17 @@ class Stack:
         Raises:
             IndexError: If the stack is empty.
         """
-        if self.is_empty():
+        if self.is_empty:
             raise IndexError("Stack is empty")
         return self._items.pop()
 
     def clear(self) -> None:
-        """
-        Remove all elements from the stack.
-        """
+        """Remove all elements from the stack."""
         self._items.clear()
 
-    # --- Access & Status Methods ---
+    # --- Access Methods ---
 
-    def peek(self) -> Any:
+    def peek(self) -> T:
         """
         Return the top element of the stack without removing it.
 
@@ -65,44 +75,6 @@ class Stack:
         Raises:
             IndexError: If the stack is empty.
         """
-        if self.is_empty():
+        if self.is_empty:
             raise IndexError("Stack is empty")
         return self._items[-1]
-
-    def is_empty(self) -> bool:
-        """
-        Check if the stack contains no elements.
-
-        Returns:
-            True if the stack is empty, False otherwise.
-        """
-        return len(self._items) == 0
-
-    # --- Traversal & Helpers ---
-
-    def traverse(self) -> list[Any]:
-        """
-        Return a copy of all elements in the stack.
-
-        Returns:
-            A list containing all elements currently in the stack.
-        """
-        return list(self._items)
-
-    def __len__(self) -> int:
-        """
-        Get the number of elements in the stack.
-
-        Returns:
-            The count of items in the stack.
-        """
-        return len(self._items)
-
-    def __str__(self) -> str:
-        """
-        Return a string representation of the stack.
-
-        Returns:
-            String in format 'Stack([item1, item2, ...])'
-        """
-        return f"Stack({self.traverse()})"

@@ -25,8 +25,8 @@ def populated_queue():
 # --- Tests: Emptiness ---
 def test_is_empty(empty_queue, populated_queue):
     """Check is_empty() for empty and populated Queue."""
-    assert empty_queue.is_empty()
-    assert not populated_queue.is_empty()
+    assert empty_queue.is_empty
+    assert not populated_queue.is_empty
 
 
 # --- Tests: Adding Elements ---
@@ -87,11 +87,11 @@ def test_peek_back_index_error(empty_queue):
 def test_clear(empty_queue, populated_queue):
     """Check clear() empties the queue and resets length."""
     empty_queue.clear()
-    assert empty_queue.traverse() == []
+    assert list(empty_queue) == []
     assert len(empty_queue) == 0
 
     populated_queue.clear()
-    assert populated_queue.traverse() == []
+    assert list(populated_queue) == []
     assert len(populated_queue) == 0
 
 
@@ -101,14 +101,14 @@ def test_traverse_is_immutable(populated_queue):
     Ensure traverse() returns a copy, so modifying the result
     does not affect the internal queue state.
     """
-    items = populated_queue.traverse()
+    items = list(populated_queue)
     original_len = len(populated_queue)
 
     items.append(999)
     items.clear()
 
     assert len(populated_queue) == original_len
-    assert populated_queue.traverse() != items
+    assert list(populated_queue) != items
 
 
 # --- Tests: Length & String Representation ---

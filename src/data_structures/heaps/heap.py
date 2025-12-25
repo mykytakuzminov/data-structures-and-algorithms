@@ -1,32 +1,132 @@
-from typing import Any
+from __future__ import annotations
+from typing import TypeVar, Generic, Iterator, Any, Protocol
 
 
-class Heap:
+class Comparable(Protocol):
+    def __lt__(self, other: Any) -> bool: ...
+    def __gt__(self, other: Any) -> bool: ...
+
+
+T = TypeVar("T", bound=Comparable)
+
+
+class Heap(Generic[T]):
     """
-    Min-Heap implementation using a dynamic array.
+    Base Heap implementation using a dynamic array.
 
-    A Min-Heap is a complete binary tree where the value of each node
-    is less than or equal to the values of its children, ensuring
-    the smallest element is always at the root.
-
-    Methods:
-        heapify(arr): Transform a list into a heap.
-        push(data): Insert a new element into the heap.
-        pop(): Remove and return the smallest element (root).
-        sort(): Return all elements in ascending order without destroying the heap.
-        peek(): Get the smallest value without removing it.
-        is_empty(): Check if the heap contains no elements.
-        clear(): Remove all elements.
+    Attributes:
+        _heap: Internal list representing the heap's complete binary tree.
     """
-    _heap: list[Any]
+    _heap: list[T]
 
     def __init__(self) -> None:
         """Initialize an empty heap."""
         self._heap = []
 
-    def _is_better(self, val1: Any, val2: Any) -> bool:
+    def __len__(self) -> int:
+        """Return the number of elements in the heap."""
+        return len(self._heap)
+
+    def __repr__(self) -> str:
+        """Return a string representation of the heap for debugging."""
+        return f"{self.__class__.__name__}({self._heap})"
+
+    def __iter__(self) -> Iterator[T]:
+        """Allow iteration over all items in the heap."""
+        return iter(self._heap)
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the heap contains no elements."""
+        return len(self._heap) == 0
+
+    # --- Modification Methods ---
+
+    def heapify(self, arr: list[T]) -> None:
         """
-        Comparison strategy to determine the priority of elements.
+        Transform a list into a valid heap in-place.
+
+        Args:
+            arr: A list of elements to be transformed into a heap.
+        """
+        n = len(arr)
+        for i in range(n // 2 - 1, -1, -1):
+            self._sift_down(arr, n, i)
+        self._heap = list(arr)
+
+    def push(self, value: T) -> None:
+        """
+        Add a new element to the heap and maintain heap property.
+
+        Args:
+            value: The element to be added to the heap.
+        """
+        self._heap.append(value)
+        self._sift_up(self._heap, len(self._heap) - 1)
+
+    def pop(self) -> T:
+        """
+        Remove and return the root element of the heap.
+
+        Returns:
+            The root element (smallest in MinHeap, largest in MaxHeap).
+
+        Raises:
+            IndexError: If the heap is empty.
+        """
+        if self.is_empty:
+            raise IndexError("pop from an empty heap")
+
+        root_value = self._heap[0]
+        last_item = self._heap.pop()
+
+        if not self.is_empty:
+            self._heap[0] = last_item
+            self._sift_down(self._heap, len(self._heap), 0)
+
+        return root_value
+
+    # --- Access & Utility Methods ---
+
+    def peek(self) -> T:
+        """
+        Return the root element without removing it.
+
+        Returns:
+            The value at the root of the heap.
+
+        Raises:
+            IndexError: If the heap is empty.
+        """
+        if self.is_empty:
+            raise IndexError("peek from an empty heap")
+        return self._heap[0]
+
+    def sort(self) -> list[T]:
+        """
+        Return all elements in sorted order without destroying the heap.
+
+        Returns:
+            A list of elements sorted according to the heap's priority.
+        """
+        original_state = self._heap[:]
+        result = []
+        try:
+            while not self.is_empty:
+                result.append(self.pop())
+        finally:
+            self._heap = original_state
+        return result
+
+    def clear(self) -> None:
+        """Remove all elements from the heap."""
+        self._heap = []
+
+    # --- Private Helpers ---
+
+    def _is_better(self, val1: T, val2: T) -> bool:
+        """
+        Abstract comparison strategy to be implemented by subclasses.
 
         Args:
             val1: First value to compare.
@@ -37,145 +137,32 @@ class Heap:
         """
         raise NotImplementedError("Subclasses must implement _is_better")
 
-    # --- Modification Methods ---
-
-    def heapify(self, arr: list[Any]) -> None:
+    def _sift_down(self, arr: list[T], n: int, i: int) -> None:
         """
-        Transform a list into a valid Min-Heap.
-
-        Args:
-            arr: A list of elements to be transformed.
-        """
-        n = len(arr)
-        for i in range(n // 2 - 1, -1, -1):
-            self._sift_down(arr, n, i)
-        self._heap = list(arr)
-        print(self._heap)
-
-    def push(self, data: Any) -> None:
-        """
-        Add a new element to the heap while maintaining heap property.
-
-        Args:
-            data: The element to be added.
-        """
-        self._heap.append(data)
-        self._sift_up(self._heap, len(self._heap) - 1)
-
-    def pop(self) -> Any:
-        """
-        Remove and return the smallest element from the heap.
-
-        Returns:
-            The smallest value (root of the heap).
-
-        Raises:
-            IndexError: If the heap is empty.
-        """
-        if self.is_empty():
-            raise IndexError("pop from an empty heap")
-
-        root_data = self._heap[0]
-        last_element = self._heap.pop()
-
-        if not self.is_empty():
-            self._heap[0] = last_element
-            self._sift_down(self._heap, len(self._heap), 0)
-
-        return root_data
-
-    # --- Access & Utility Methods ---
-
-    def sort(self) -> list[Any]:
-        """
-        Return all elements in sorted order.
-
-        This method performs Heapsort but preserves the internal state
-        of the heap by using a backup of the original data.
-
-        Returns:
-            A list of all elements in ascending order.
-        """
-        original_arr = self._heap[:]
-        result = []
-
-        try:
-            while not self.is_empty():
-                result.append(self.pop())
-        finally:
-            self._heap = original_arr
-
-        return result
-
-    def peek(self) -> Any:
-        """
-        Return the smallest element without removing it.
-
-        Returns:
-            The root value of the heap.
-
-        Raises:
-            IndexError: If the heap is empty.
-        """
-        if self.is_empty():
-            raise IndexError("peek from an empty heap")
-        return self._heap[0]
-
-    def traverse(self) -> list[Any]:
-        """
-        Return a copy of the internal array representing the heap.
-
-        This provides a level-order traversal of the underlying
-        complete binary tree.
-
-        Returns:
-            A list of all elements in their current heap order.
-        """
-        return list(self._heap)
-
-    def is_empty(self) -> bool:
-        """
-        Check if the heap contains no elements.
-
-        Returns:
-            True if the heap is empty, False otherwise.
-        """
-        return len(self._heap) == 0
-
-    def clear(self) -> None:
-        """
-        Remove all elements from the heap.
-        """
-        self._heap = []
-
-    # --- Internal Utility Methods ---
-
-    def _sift_down(self, arr: list[Any], n: int, i: int) -> None:
-        """
-        Move an element down the tree to its correct position (Heapify-down).
+        Move an element down the tree to its correct position.
 
         Args:
             arr: The list representing the heap.
-            n: Number of elements in the heap.
+            n: Total number of elements in the array.
             i: Index of the element to sift down.
         """
-        smallest = i
+        better = i
         left = 2 * i + 1
         right = 2 * i + 2
 
-        if left < n and self._is_better(arr[left], arr[smallest]):
-            smallest = left
+        if left < n and self._is_better(arr[left], arr[better]):
+            better = left
 
-        if right < n and self._is_better(arr[right], arr[smallest]):
-            smallest = right
+        if right < n and self._is_better(arr[right], arr[better]):
+            better = right
 
-        if smallest != i:
-            arr[i], arr[smallest] = arr[smallest], arr[i]
-            self._sift_down(arr, n, smallest)
+        if better != i:
+            arr[i], arr[better] = arr[better], arr[i]
+            self._sift_down(arr, n, better)
 
-    def _sift_up(self, arr: list[Any], i: int) -> None:
+    def _sift_up(self, arr: list[T], i: int) -> None:
         """
-        Move an element up the tree to its correct position (Bubble-up).
+        Move an element up the tree to its correct position.
 
         Args:
             arr: The list representing the heap.
@@ -189,25 +176,18 @@ class Heap:
             arr[i], arr[parent] = arr[parent], arr[i]
             self._sift_up(arr, parent)
 
-    # --- Standard Python Methods ---
 
-    def __len__(self) -> int:
-        """
-        Get the number of elements in the heap.
-
-        Returns:
-            The count of elements.
-        """
-        return len(self._heap)
-
-
-class MaxHeap(Heap):
+class MaxHeap(Heap[T]):
     """Max-Heap implementation where the largest element is at the root."""
-    def _is_better(self, val1: Any, val2: Any) -> bool:
+
+    def _is_better(self, val1: T, val2: T) -> bool:
+        """Compare two values for Max-Heap priority."""
         return val1 > val2
 
 
-class MinHeap(Heap):
+class MinHeap(Heap[T]):
     """Min-Heap implementation where the smallest element is at the root."""
-    def _is_better(self, val1: Any, val2: Any) -> bool:
+
+    def _is_better(self, val1: T, val2: T) -> bool:
+        """Compare two values for Min-Heap priority."""
         return val1 < val2

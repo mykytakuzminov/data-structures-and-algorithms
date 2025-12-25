@@ -1,34 +1,43 @@
-from typing import Any
-from src.data_structures.linked_lists.doubly_linked_list import (
-    DoublyLinkedList,
-)
+from __future__ import annotations
+from typing import TypeVar, Generic, Iterator
+from src.data_structures.linked_lists.doubly_linked_list import DoublyLinkedList
+
+T = TypeVar("T")
 
 
-class Queue:
+class Queue(Generic[T]):
     """
     Queue data structure implemented using a doubly linked list.
 
-    The queue follows the FIFO (First In, First Out) principle.
-    Elements are added to the back and removed from the front.
-
-    Methods:
-        enqueue(item): Add an element to the end of the queue.
-        dequeue(): Remove and return the element from the front.
-        front(): Return the first element without removing it.
-        back(): Return the last element without removing it.
-        is_empty(): Check if the queue is empty.
-        clear(): Remove all elements from the queue.
-        traverse(): Return a list of all elements.
+    Attributes:
+        _items: Internal doubly linked list to store queue elements.
     """
-    _items: DoublyLinkedList
+    _items: DoublyLinkedList[T]
 
     def __init__(self) -> None:
-        """Initialize an empty queue using a doubly linked list."""
+        """Initialize an empty queue."""
         self._items = DoublyLinkedList()
+
+    def __len__(self) -> int:
+        """Return the number of elements in the queue."""
+        return len(self._items)
+
+    def __repr__(self) -> str:
+        """Return a string representation for debugging."""
+        return f"Queue({list(self)})"
+
+    def __iter__(self) -> Iterator[T]:
+        """Allow iteration over queue elements."""
+        return iter(self._items)
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the queue contains no elements."""
+        return len(self) == 0
 
     # --- Modification Methods ---
 
-    def enqueue(self, item: Any) -> None:
+    def enqueue(self, item: T) -> None:
         """
         Add an element to the end of the queue.
 
@@ -37,7 +46,7 @@ class Queue:
         """
         self._items.append(item)
 
-    def dequeue(self) -> Any:
+    def dequeue(self) -> T:
         """
         Remove and return the element from the front of the queue.
 
@@ -47,80 +56,34 @@ class Queue:
         Raises:
             IndexError: If the queue is empty.
         """
-        if self.is_empty():
+        if self.is_empty:
             raise IndexError("Queue is empty")
         return self._items.pop_front()
 
     def clear(self) -> None:
-        """
-        Remove all elements from the queue.
-        """
+        """Remove all elements from the queue."""
         self._items.clear()
 
-    # --- Access & Status Methods ---
+    # --- Access Methods ---
 
-    def front(self) -> Any:
+    def front(self) -> T:
         """
-        Return the first element of the queue without removing it.
-
-        Returns:
-            The value at the front of the queue.
+        Return the first element without removing it.
 
         Raises:
             IndexError: If the queue is empty.
         """
-        if self.is_empty():
+        if self.is_empty:
             raise IndexError("Queue is empty")
         return self._items.peek_front()
 
-    def back(self) -> Any:
+    def back(self) -> T:
         """
-        Return the last element of the queue without removing it.
-
-        Returns:
-            The value at the back of the queue.
+        Return the last element without removing it.
 
         Raises:
             IndexError: If the queue is empty.
         """
-        if self.is_empty():
+        if self.is_empty:
             raise IndexError("Queue is empty")
         return self._items.peek_back()
-
-    def is_empty(self) -> bool:
-        """
-        Check if the queue contains no elements.
-
-        Returns:
-            True if the queue is empty, False otherwise.
-        """
-        return self._items.is_empty()
-
-    # --- Traversal & Helpers ---
-
-    def traverse(self) -> list[Any]:
-        """
-        Return a list of all elements in the queue.
-
-        Returns:
-            A list containing all elements currently in the queue.
-        """
-        return self._items.traverse()
-
-    def __len__(self) -> int:
-        """
-        Get the number of elements in the queue.
-
-        Returns:
-            The count of items in the queue.
-        """
-        return len(self._items)
-
-    def __str__(self) -> str:
-        """
-        Return a string representation of the queue.
-
-        Returns:
-            String in format 'Queue([item1, item2, ...])'
-        """
-        return f"Queue({self.traverse()})"

@@ -23,8 +23,8 @@ def populated_stack():
 # --- Tests: Emptiness ---
 def test_is_empty(empty_stack, populated_stack):
     """Check is_empty() for empty and populated stacks."""
-    assert empty_stack.is_empty()
-    assert not populated_stack.is_empty()
+    assert empty_stack.is_empty
+    assert not populated_stack.is_empty
 
 
 # --- Tests: Pushing Elements ---
@@ -71,11 +71,11 @@ def test_peek_index_error(empty_stack):
 def test_clear(empty_stack, populated_stack):
     """Check clear() empties the stack and resets length."""
     empty_stack.clear()
-    assert empty_stack.traverse() == []
+    assert list(empty_stack) == []
     assert len(empty_stack) == 0
 
     populated_stack.clear()
-    assert populated_stack.traverse() == []
+    assert list(populated_stack) == []
     assert len(populated_stack) == 0
 
 
@@ -85,14 +85,14 @@ def test_traverse_is_immutable(populated_stack):
     Ensure traverse() returns a copy, so modifying the result
     does not affect the internal stack state.
     """
-    items = populated_stack.traverse()
+    items = list(populated_stack)
     original_len = len(populated_stack)
 
     items.append(999)
     items.clear()
 
     assert len(populated_stack) == original_len
-    assert populated_stack.traverse() != items
+    assert list(populated_stack) != items
 
 
 # --- Tests: Length & String Representation ---

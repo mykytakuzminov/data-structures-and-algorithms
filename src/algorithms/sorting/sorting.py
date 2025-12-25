@@ -13,6 +13,8 @@ class Comparable(Protocol):
 T = TypeVar("T", bound=Comparable)
 
 
+# --- Comparison Based Sorting Algorithms ---
+
 def bubble_sort(arr: list[T]) -> None:
     """
     Sorts a list in ascending order using the optimized Bubble Sort algorithm.
@@ -32,15 +34,12 @@ def bubble_sort(arr: list[T]) -> None:
              The sort is performed in-place.
     """
     n = len(arr)
-
     for i in range(n):
         swapped = False
-
         for j in range(1, n - i):
             if arr[j] < arr[j - 1]:
                 arr[j], arr[j - 1] = arr[j - 1], arr[j]
                 swapped = True
-
         if not swapped:
             break
 
@@ -64,7 +63,6 @@ def insertion_sort(arr: list[T]) -> None:
              The sort is performed in-place.
     """
     n = len(arr)
-
     for i in range(1, n):
         for j in range(i, 0, -1):
             if arr[j] < arr[j - 1]:
@@ -93,14 +91,11 @@ def selection_sort(arr: list[T]) -> None:
              The sort is performed in-place.
     """
     n = len(arr)
-
     for i in range(n):
         min_index = i
-
         for j in range(i + 1, n):
             if arr[j] < arr[min_index]:
                 min_index = j
-
         arr[i], arr[min_index] = arr[min_index], arr[i]
 
 
@@ -123,12 +118,9 @@ def merge_sort(arr: list[T]) -> None:
         arr: A list of elements that supports comparison operations (e.g., int, float).
              The sort is performed in-place (with O(n) auxiliary space).
     """
-    n = len(arr)
-
-    if n <= 1:
+    if len(arr) <= 1:
         return
-
-    _merge_sort_partition(arr, 0, n - 1)
+    _merge_sort_partition(arr, 0, len(arr) - 1)
 
 
 def quick_sort(arr: list[T]) -> None:
@@ -154,13 +146,12 @@ def quick_sort(arr: list[T]) -> None:
         arr: A list of elements that supports comparison operations (e.g., int, float).
              The sort is performed in-place.
     """
-    n = len(arr)
-
-    if n <= 1:
+    if len(arr) <= 1:
         return
+    _quick_sort_helper(arr, 0, len(arr) - 1)
 
-    _quick_sort_helper(arr, 0, n - 1)
 
+# --- Non-Comparison Based Sorting Algorithms ---
 
 def counting_sort(arr: list[int]) -> None:
     """
@@ -184,24 +175,24 @@ def counting_sort(arr: list[int]) -> None:
         arr: A list of non-negative integers to be sorted.
              The sort is performed in-place in this implementation.
     """
-    n = len(arr)
-
-    if n <= 1:
+    if len(arr) <= 1:
         return
 
-    maxx = max(arr)
-    counts = [0] * (maxx + 1)
+    max_val = max(arr)
+    counts = [0] * (max_val + 1)
 
     for x in arr:
         counts[x] += 1
 
     i = 0
-    for c in range(maxx + 1):
-        while counts[c] > 0:
-            arr[i] = c
+    for val, count in enumerate(counts):
+        while count > 0:
+            arr[i] = val
             i += 1
-            counts[c] -= 1
+            count -= 1
 
+
+# --- Private Helpers ---
 
 def _merge_sort_helper(arr: list[T], left: int, mid: int, right: int) -> None:
     """
@@ -221,33 +212,30 @@ def _merge_sort_helper(arr: list[T], left: int, mid: int, right: int) -> None:
         mid: The ending index of the first (left) sorted sub-array.
         right: The ending index of the second (right) sorted sub-array.
     """
-    L_len = mid - left + 1
-    R_len = right - mid
+    L = arr[left : mid + 1]
+    R = arr[mid + 1 : right + 1]
 
-    L = [arr[left + i] for i in range(L_len)]
-    R = [arr[mid + i + 1] for i in range(R_len)]
+    li = ri = 0
+    curr = left
 
-    li, ri = 0, 0
-    i = left
-
-    while li < L_len and ri < R_len:
+    while li < len(L) and ri < len(R):
         if L[li] <= R[ri]:
-            arr[i] = L[li]
+            arr[curr] = L[li]
             li += 1
         else:
-            arr[i] = R[ri]
+            arr[curr] = R[ri]
             ri += 1
-        i += 1
+        curr += 1
 
-    while li < L_len:
-        arr[i] = L[li]
+    while li < len(L):
+        arr[curr] = L[li]
         li += 1
-        i += 1
+        curr += 1
 
-    while ri < R_len:
-        arr[i] = R[ri]
+    while ri < len(R):
+        arr[curr] = R[ri]
         ri += 1
-        i += 1
+        curr += 1
 
 
 def _merge_sort_partition(arr: list[T], left: int, right: int) -> None:
@@ -268,10 +256,8 @@ def _merge_sort_partition(arr: list[T], left: int, right: int) -> None:
     """
     if left < right:
         mid = (left + right) // 2
-
         _merge_sort_partition(arr, left, mid)
         _merge_sort_partition(arr, mid + 1, right)
-
         _merge_sort_helper(arr, left, mid, right)
 
 
@@ -289,7 +275,6 @@ def _quick_sort_helper(arr: list[T], left: int, right: int) -> None:
     """
     if left < right:
         pi = _quick_sort_partition(arr, left, right)
-
         _quick_sort_helper(arr, left, pi - 1)
         _quick_sort_helper(arr, pi + 1, right)
 
@@ -313,13 +298,9 @@ def _quick_sort_partition(arr: list[T], left: int, right: int) -> int:
     """
     pivot = arr[right]
     j = left - 1
-
     for i in range(left, right):
         if arr[i] <= pivot:
             j += 1
-
             arr[j], arr[i] = arr[i], arr[j]
-
     arr[j + 1], arr[right] = arr[right], arr[j + 1]
-
     return j + 1

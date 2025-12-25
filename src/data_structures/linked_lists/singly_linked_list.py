@@ -1,47 +1,39 @@
-from typing import Any, Optional
+from __future__ import annotations
+from typing import TypeVar, Generic, Optional, Iterator
+
+T = TypeVar("T")
 
 
-class Node:
+class Node(Generic[T]):
     """
     Node class for a singly linked list.
 
     Attributes:
-        data: The value stored in the node.
+        value: The data stored in the node.
         next: Pointer to the next node in the list.
     """
-    data: Any
-    next: Optional["Node"]
+    value: T
+    next: Optional[Node[T]]
 
-    def __init__(self, data: Any) -> None:
-        """
-        Initialize a node with a given value.
-
-        Args:
-            data: The value to be stored in the node.
-        """
-        self.data = data
+    def __init__(self, value: T) -> None:
+        """Initialize a node with a given value.."""
+        self.value = value
         self.next = None
 
+    def __repr__(self) -> str:
+        """Return a string representation of the node."""
+        return f"Node({self.value})"
 
-class SinglyLinkedList:
+
+class SinglyLinkedList(Generic[T]):
     """
     Singly Linked List implementation.
 
-    This list allows traversal in only one direction (forward).
-    It maintains a head pointer.
-
-    Methods:
-        append(data): Add an element to the end.
-        prepend(data): Add an element to the beginning.
-        insert(index, data): Insert at a specific index.
-        delete(key): Remove the first occurrence of a value.
-        search(key): Check if a value exists.
-        get(index): Get value at a specific index.
-        is_empty(): Check if the list is empty.
-        clear(): Remove all elements.
-        traverse(): Return a list of all elements.
+    Attributes:
+        _head: Reference to the first node in the list.
+        _length: Total number of nodes in the list.
     """
-    _head: Optional[Node]
+    _head: Optional[Node[T]]
     _length: int
 
     def __init__(self) -> None:
@@ -49,48 +41,72 @@ class SinglyLinkedList:
         self._head = None
         self._length = 0
 
+    def __len__(self) -> int:
+        """Return the number of nodes in the list."""
+        return self._length
+
+    def __repr__(self) -> str:
+        """Return a string representation of the list."""
+        return f"SinglyLinkedList({list(self)})"
+
+    def __iter__(self) -> Iterator[T]:
+        """
+        Allow iteration over the list elements from head to end.
+
+        Yields:
+            The values of the nodes in order.
+        """
+        current = self._head
+        while current:
+            yield current.value
+            current = current.next
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the list contains no elements."""
+        return self._length == 0
+
     # --- Modification Methods (Insertion) ---
 
-    def append(self, data: Any) -> None:
+    def append(self, value: T) -> None:
         """
         Add an element at the end of the list.
 
         Args:
-            data: Value to append to the list.
+            value: Value to append to the list.
         """
-        new_node = Node(data)
+        new_node = Node(value)
 
-        if not self._head:
+        if self.is_empty:
             self._head = new_node
         else:
             current = self._head
-            while current.next:
+            while current and current.next:
                 current = current.next
-            current.next = new_node
+            if current:
+                current.next = new_node
 
         self._length += 1
 
-    def prepend(self, data: Any) -> None:
+    def prepend(self, value: T) -> None:
         """
         Add an element at the beginning of the list.
 
         Args:
-            data: The value to be added.
+            value: The value to be added.
         """
-        new_node = Node(data)
-
+        new_node = Node(value)
         new_node.next = self._head
         self._head = new_node
-
         self._length += 1
 
-    def insert(self, index: int, data: Any) -> None:
+    def insert(self, index: int, value: T) -> None:
         """
         Insert a new element at a specific index.
 
         Args:
             index: Position at which to insert the element.
-            data: The value to be added.
+            value: The value to be added.
 
         Raises:
             IndexError: If index is out of range.
@@ -99,26 +115,20 @@ class SinglyLinkedList:
             raise IndexError("Index out of range")
 
         if index == 0:
-            self.prepend(data)
+            self.prepend(value)
             return
 
-        new_node = Node(data)
-        current = self._head
+        prev_node = self._get_node(index - 1)
+        new_node = Node(value)
 
-        # Traverse to the node immediately before the index
-        for _ in range(index - 1):
-            if current:
-                current = current.next
-
-        if current:
-            new_node.next = current.next
-            current.next = new_node
+        new_node.next = prev_node.next
+        prev_node.next = new_node
 
         self._length += 1
 
     # --- Modification Methods (Deletion) ---
 
-    def delete(self, key: Any) -> bool:
+    def delete(self, key: T) -> bool:
         """
         Delete the first element with the given value.
 
@@ -132,7 +142,7 @@ class SinglyLinkedList:
         prev = None
 
         while current:
-            if current.data == key:
+            if current.value == key:
                 if prev:
                     prev.next = current.next
                 else:
@@ -147,15 +157,13 @@ class SinglyLinkedList:
         return False
 
     def clear(self) -> None:
-        """
-        Remove all elements from the list.
-        """
+        """Remove all elements from the list."""
         self._head = None
         self._length = 0
 
     # --- Access & Search Methods ---
 
-    def search(self, key: Any) -> bool:
+    def search(self, key: T) -> bool:
         """
         Search for an element by value.
 
@@ -165,14 +173,12 @@ class SinglyLinkedList:
         Returns:
             True if the element is found, False otherwise.
         """
-        current = self._head
-        while current:
-            if current.data == key:
+        for value in self:
+            if value == key:
                 return True
-            current = current.next
         return False
 
-    def get(self, index: int) -> Any:
+    def get(self, index: int) -> T:
         """
         Return the value of the node at a specific index.
 
@@ -181,6 +187,20 @@ class SinglyLinkedList:
 
         Returns:
             Value at the specified index.
+        """
+        return self._get_node(index).value
+
+    # --- Private Helpers ---
+
+    def _get_node(self, index: int) -> Node[T]:
+        """
+        Internal helper to fetch a node at a specific index.
+
+        Args:
+            index: Position of the node to retrieve.
+
+        Returns:
+            The Node object at the given index.
 
         Raises:
             IndexError: If index is out of range.
@@ -193,50 +213,6 @@ class SinglyLinkedList:
             if current:
                 current = current.next
 
-        if current:
-            return current.data
-
-        raise IndexError("Index out of range")
-
-    def is_empty(self) -> bool:
-        """
-        Check if the list contains no elements.
-
-        Returns:
-            True if the list is empty, False otherwise.
-        """
-        return self._head is None
-
-    def traverse(self) -> list[Any]:
-        """
-        Return a list of all elements in the linked list.
-
-        Returns:
-            A Python list containing all elements in order.
-        """
-        elements = []
-        current = self._head
-        while current:
-            elements.append(current.data)
-            current = current.next
-        return elements
-
-    # --- Internal/Testing Helpers ---
-
-    def __len__(self) -> int:
-        """
-        Get the number of nodes in the list.
-
-        Returns:
-            The count of nodes.
-        """
-        return self._length
-
-    def __str__(self) -> str:
-        """
-        Return a string representation of the list.
-
-        Returns:
-            String representation of the internal list.
-        """
-        return str(self.traverse())
+        if current is None:
+            raise IndexError("Index out of range")
+        return current

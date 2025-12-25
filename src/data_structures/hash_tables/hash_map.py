@@ -1,65 +1,90 @@
-from typing import Any, Optional
+from __future__ import annotations
+from typing import TypeVar, Generic, Optional, Iterator, Any
+
+K = TypeVar("K")
+V = TypeVar("V")
 
 
-class HashMap:
+class HashMap(Generic[K, V]):
     """
-    Hash Map implementation using chaining (buckets) for collision resolution.
+    Hash Map implementation using chaining.
 
-    This data structure maps keys to values. It uses a list of buckets,
-    where each bucket is a list of (key, value) tuples.
-
-    Methods:
-        put(key, value): Insert or update a key-value pair.
-        get(key): Return the value for a key.
-        remove(key): Remove a key-value pair.
-        contains(key): Check if a key exists.
-        is_empty(): Check if the map is empty.
-        clear(): Remove all entries.
-        keys(): Return a list of all keys.
-        values(): Return a list of all values.
+    Attributes:
+        _capacity: Initial number of buckets.
+        _length: Number of key-value pairs stored.
+        _buckets: List of buckets, each containing (key, value) pairs.
     """
     _capacity: int
     _length: int
-    _buckets: list[list[tuple[Any, Any]]]
+    _buckets: list[list[tuple[K, V]]]
 
     def __init__(self, capacity: int = 8) -> None:
-        """
-        Initialize an empty hash map.
-
-        Args:
-            capacity: Initial number of buckets (default is 8).
-        """
+        """Initialize an empty hash map."""
         self._capacity = capacity
         self._length = 0
         self._buckets = [[] for _ in range(capacity)]
 
+    def __len__(self) -> int:
+        """Return the total number of key-value pairs."""
+        return self._length
+
+    def __repr__(self) -> str:
+        """Return a string representation for debugging."""
+        pairs = []
+        for bucket in self._buckets:
+            for k, v in bucket:
+                pairs.append(f"{repr(k)}: {repr(v)}")
+        content = ", ".join(pairs)
+        return f"HashMap({{{content}}})"
+
+    def __str__(self) -> str:
+        """Return a string representation like a Python dictionary."""
+        if self.is_empty:
+            return "{}"
+        pairs = []
+        for bucket in self._buckets:
+            for k, v in bucket:
+                pairs.append(f"{repr(k)}: {repr(v)}")
+        return "{" + ", ".join(pairs) + "}"
+
+    def __iter__(self) -> Iterator[K]:
+        """Allow iteration over all keys in the map."""
+        for bucket in self._buckets:
+            for k, _ in bucket:
+                yield k
+
+    def __contains__(self, key: Any) -> bool:
+        """Enable 'in' operator support."""
+        index = self._hash(key)
+        return self._find_index_in_bucket(index, key) is not None
+
+    @property
+    def is_empty(self) -> bool:
+        """Check if the hash map contains no elements."""
+        return self._length == 0
+
     # --- Modification Methods ---
 
-    def put(self, key: Any, value: Any) -> None:
+    def put(self, key: K, value: V) -> None:
         """
         Insert or update a key-value pair in the hash map.
 
-        If the key already exists, its value is updated.
-        If the key is new, it is added to the map.
-
         Args:
-            key: Key to insert/update.
+            key: Key to insert or update.
             value: Value associated with the key.
         """
         index = self._hash(key)
         bucket = self._buckets[index]
 
-        # Check if key exists and update
-        for i, (k, v) in enumerate(bucket):
-            if k == key:
-                bucket[i] = (key, value)
-                return
+        entry_index = self._find_index_in_bucket(index, key)
 
-        # Key not found, append new pair
-        bucket.append((key, value))
-        self._length += 1
+        if entry_index is not None:
+            bucket[entry_index] = (key, value)
+        else:
+            bucket.append((key, value))
+            self._length += 1
 
-    def remove(self, key: Any) -> bool:
+    def remove(self, key: K) -> bool:
         """
         Remove a key-value pair by key.
 
@@ -67,29 +92,26 @@ class HashMap:
             key: Key to remove.
 
         Returns:
-            True if key was removed, False if key was not found.
+            True if key was removed, False otherwise.
         """
         index = self._hash(key)
-        bucket = self._buckets[index]
+        entry_index = self._find_index_in_bucket(index, key)
 
-        for i, (k, v) in enumerate(bucket):
-            if k == key:
-                del bucket[i]
-                self._length -= 1
-                return True
+        if entry_index is not None:
+            del self._buckets[index][entry_index]
+            self._length -= 1
+            return True
 
         return False
 
     def clear(self) -> None:
-        """
-        Remove all key-value pairs from the hash map.
-        """
+        """Remove all key-value pairs from the map."""
         self._buckets = [[] for _ in range(self._capacity)]
         self._length = 0
 
-    # --- Access & Search Methods ---
+    # --- Access Methods ---
 
-    def get(self, key: Any) -> Optional[Any]:
+    def get(self, key: K) -> Optional[V]:
         """
         Return the value for the given key.
 
@@ -97,107 +119,47 @@ class HashMap:
             key: Key to retrieve.
 
         Returns:
-            Value associated with the key, or None if key not found.
+            The associated value, or None if the key is not found.
         """
         index = self._hash(key)
-        bucket = self._buckets[index]
+        entry_index = self._find_index_in_bucket(index, key)
 
-        for k, v in bucket:
-            if k == key:
-                return v
+        if entry_index is not None:
+            return self._buckets[index][entry_index][1]
 
         return None
 
-    def contains(self, key: Any) -> bool:
-        """
-        Check if the hash map contains a specific key.
+    def keys(self) -> list[K]:
+        """Return a list of all keys in the map."""
+        return list(self)
 
-        Args:
-            key: Key to search for.
-
-        Returns:
-            True if key exists, False otherwise.
-        """
-        index = self._hash(key)
-        bucket = self._buckets[index]
-
-        for k, v in bucket:
-            if k == key:
-                return True
-        return False
-
-    def keys(self) -> list[Any]:
-        """
-        Return a list of all keys in the map.
-
-        Returns:
-            A list containing all keys.
-        """
-        all_keys = []
-        for bucket in self._buckets:
-            for k, _ in bucket:
-                all_keys.append(k)
-        return all_keys
-
-    def values(self) -> list[Any]:
-        """
-        Return a list of all values in the map.
-
-        Returns:
-            A list containing all values.
-        """
+    def values(self) -> list[V]:
+        """Return a list of all values in the map."""
         all_values = []
         for bucket in self._buckets:
-            for k, v in bucket:
+            for _, v in bucket:
                 all_values.append(v)
         return all_values
 
-    # --- Status & Internal Methods ---
-
-    def is_empty(self) -> bool:
-        """
-        Check if the hash map is empty.
-
-        Returns:
-            True if the map is empty, False otherwise.
-        """
-        return self._length == 0
+    # --- Private Helpers ---
 
     def _hash(self, key: Any) -> int:
-        """
-        Compute the bucket index for a given key.
-
-        Args:
-            key: The key to compute hash for.
-
-        Returns:
-            Index in the internal bucket list.
-        """
+        """Compute the bucket index for a given key."""
         return hash(key) % self._capacity
 
-    # --- Magic Methods ---
-
-    def __contains__(self, key: Any) -> bool:
-        """Enable 'in' operator support (e.g., 'if key in map:')."""
-        return self.contains(key)
-
-    def __len__(self) -> int:
-        """Return the total number of key-value pairs."""
-        return self._length
-
-    def __str__(self) -> str:
+    def _find_index_in_bucket(self, bucket_index: int, key: Any) -> Optional[int]:
         """
-        Return a string representation like a Python dictionary.
+        Find the index of a key within a specific bucket.
+
+        Args:
+            bucket_index: The index of the bucket to search in.
+            key: The key to look for.
 
         Returns:
-            String in format '{key1: value1, key2: value2}'
+            The integer index within the bucket list, or None if not found.
         """
-        if self._length == 0:
-            return "{}"
-
-        pairs = []
-        for bucket in self._buckets:
-            for k, v in bucket:
-                pairs.append(f"{repr(k)}: {repr(v)}")
-
-        return "{" + ", ".join(pairs) + "}"
+        bucket = self._buckets[bucket_index]
+        for i, (k, _) in enumerate(bucket):
+            if k == key:
+                return i
+        return None

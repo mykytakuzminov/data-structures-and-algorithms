@@ -18,11 +18,11 @@ class Heap:
         is_empty(): Check if the heap contains no elements.
         clear(): Remove all elements.
     """
-    _arr: list[Any]
+    _heap: list[Any]
 
     def __init__(self) -> None:
         """Initialize an empty heap."""
-        self._arr = []
+        self._heap = []
 
     def _is_better(self, val1: Any, val2: Any) -> bool:
         """
@@ -49,7 +49,8 @@ class Heap:
         n = len(arr)
         for i in range(n // 2 - 1, -1, -1):
             self._sift_down(arr, n, i)
-        self._arr = list(arr)
+        self._heap = list(arr)
+        print(self._heap)
 
     def push(self, data: Any) -> None:
         """
@@ -58,8 +59,8 @@ class Heap:
         Args:
             data: The element to be added.
         """
-        self._arr.append(data)
-        self._sift_up(self._arr, len(self._arr) - 1)
+        self._heap.append(data)
+        self._sift_up(self._heap, len(self._heap) - 1)
 
     def pop(self) -> Any:
         """
@@ -74,12 +75,12 @@ class Heap:
         if self.is_empty():
             raise IndexError("pop from an empty heap")
 
-        root_data = self._arr[0]
-        last_element = self._arr.pop()
+        root_data = self._heap[0]
+        last_element = self._heap.pop()
 
         if not self.is_empty():
-            self._arr[0] = last_element
-            self._sift_down(self._arr, len(self._arr), 0)
+            self._heap[0] = last_element
+            self._sift_down(self._heap, len(self._heap), 0)
 
         return root_data
 
@@ -95,14 +96,14 @@ class Heap:
         Returns:
             A list of all elements in ascending order.
         """
-        original_arr = self._arr[:]
+        original_arr = self._heap[:]
         result = []
 
         try:
             while not self.is_empty():
                 result.append(self.pop())
         finally:
-            self._arr = original_arr
+            self._heap = original_arr
 
         return result
 
@@ -118,7 +119,7 @@ class Heap:
         """
         if self.is_empty():
             raise IndexError("peek from an empty heap")
-        return self._arr[0]
+        return self._heap[0]
 
     def is_empty(self) -> bool:
         """
@@ -127,13 +128,13 @@ class Heap:
         Returns:
             True if the heap is empty, False otherwise.
         """
-        return len(self._arr) == 0
+        return len(self._heap) == 0
 
     def clear(self) -> None:
         """
         Remove all elements from the heap.
         """
-        self._arr = []
+        self._heap = []
 
     # --- Internal Utility Methods ---
 
@@ -185,4 +186,16 @@ class Heap:
         Returns:
             The count of elements.
         """
-        return len(self._arr)
+        return len(self._heap)
+
+
+class MaxHeap(Heap):
+    """Max-Heap implementation where the largest element is at the root."""
+    def _is_better(self, val1: Any, val2: Any) -> bool:
+        return val1 > val2
+
+
+class MinHeap(Heap):
+    """Min-Heap implementation where the smallest element is at the root."""
+    def _is_better(self, val1: Any, val2: Any) -> bool:
+        return val1 < val2

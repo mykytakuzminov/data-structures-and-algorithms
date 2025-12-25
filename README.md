@@ -12,8 +12,9 @@ All implementations are fully typed (using `typing`) and tested with `pytest`.
 - [x] **Queue** (FIFO)
 - [x] **Linked Lists** (Singly & Doubly)
 - [x] **Hash Map** (with chaining for collisions)
-- [x] **Binary Tree** (Binary Search Tree)
+- [x] **Binary Search Tree**
 - [x] **Heap** (Max & Min)
+- [x] **Graph** (Adjacency List implementation)
 
 ### Algorithms
 - [x] **Binary Search** (Generic implementation)
@@ -60,7 +61,7 @@ pytest tests/test_stack.py
 
 This project uses `tox` to automate the testing process in isolated environments. This ensures that the code works across different Python versions and passes all quality checks (linting, typing).
 
-**Prerequisite:** Make sure you have compatible Python versions installed (3.10, 3.11, 3.12), or `tox` will skip missing interpreters.
+**Prerequisite:** Make sure you have compatible Python versions installed (3.14), or `tox` will skip missing interpreters.
 
 ```bash
 # Run the full suite (Tests on all Py versions + Flake8 + MyPy)
